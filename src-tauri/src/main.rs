@@ -5,6 +5,7 @@
 use steamworks::{Client,AppId};
 use serde::{Deserialize, Serialize};
 use reqwest::Error;
+use rusqlite::{Connection, Result};
 
 #[tauri::command]
 fn get_steam_id() -> String {
@@ -18,20 +19,20 @@ async fn main() {
      
     let _ = get_steam_app_list().await;
     let steamid = get_steam_id();
-    println!("{}", steamid)
+    println!("{}", steamid);
 
-    // tauri::Builder::default()
-    //     .invoke_handler(tauri::generate_handler![get_steam_id])
-    //     .run(tauri::generate_context!())
-    //     .expect("error while running tauri application");
+    tauri::Builder::default()
+        .invoke_handler(tauri::generate_handler![get_steam_id])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Entry {
-    userId: i32,
-    id: i32,
-    title: String,
-    body: String,
+struct App {
+    appid: i32,
+    name: String,
+    last_modified: i32,
+    price_change_number: i32
 }
 
 async fn get_steam_app_list() -> Result<(), Error> {
@@ -39,20 +40,15 @@ async fn get_steam_app_list() -> Result<(), Error> {
     let _response = reqwest::get(_url).await?;
 
     if _response.status().is_success() {
-        let entries: Vec<Entry> = _response.json().await?;
+        let entries: Vec<App> = _response.json().await?;
         
         for (_index, entry) in entries.iter().enumerate() {
-            println!("Entry: {:?}", entry.id);
-            println!();
-            println!();
+            println!("App: {:?}", entry.name);
         } 
             
     } else {
         println!("Failed: {}", _response.status());
-        
     }
     
-
-    println!("Hello, world!");
     Ok(())
 }

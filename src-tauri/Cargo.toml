@@ -17,6 +17,7 @@ reqwest = { version = "0.12.7", features = ["blocking", "json"] }
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"
 tokio = { version = "1.40.0", features = ["full"] }
+rusqlite = { version = "0.32.1", features = ["bundled"] }
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
