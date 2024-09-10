@@ -70,6 +70,24 @@ pub fn query_id(db: &mut Connection, appid: i32) -> Result<App, rusqlite::Error>
     Ok(row)
 }
 
+pub fn query_name(db: &mut Connection, name: String) -> Result<Vec<App>, rusqlite::Error> {
+    let mut stmt = db.prepare("
+        SELECT * FROM apps WHERE name LIKE ?"
+    )?;
+
+    let search_pattern = format!("%{}%", name);
+    let rows = stmt.query_map([search_pattern], |row| {
+        Ok(App {
+            appid: row.get(0)?,
+            name: row.get(1)?,
+            last_modified: row.get(2)?,
+            price_change_number: row.get(3)?,
+        })
+    })?;
+
+    let result: Vec<App> = rows.collect::<Result<Vec<App>, rusqlite::Error>>()?;
+    Ok(result) 
+}
 
 
 

@@ -1,5 +1,8 @@
 import { useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
+
+import Search from './components/Search/';
+
 import "./App.css";
 
 function App() {
@@ -8,13 +11,13 @@ function App() {
   useEffect(() => {
     invoke("cmd_request_data").then((response) => {
       invoke("cmd_populate_data", { apps: response }).then(() => {
-				console.log("Database Ready.");
-			});
+        console.log("Database Ready.");
+      });
     });
   }, []);
 
   function handleClick() {
-    invoke("cmd_query_id", { appid: 1245620 }).then((response) => {
+    invoke("cmd_query_name", { name: "Dark Souls" }).then((response) => {
       console.log("RESPONSE: ", response);
     });
   }
@@ -22,6 +25,10 @@ function App() {
   return (
     <>
       <button onClick={handleClick}>Click</button>
+
+			<Search />
+
+
     </>
   );
 }
