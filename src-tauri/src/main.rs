@@ -2,112 +2,72 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![allow(non_snake_case)]
 
-use reqwest::Error;
-use rusqlite::{Connection, Result};
-use serde::{Deserialize, Serialize};
-use steamworks::{AppId, Client};
+mod database;
+mod state;
 
-#[tauri::command]
-fn get_steam_id() -> String {
-    let (_client, _single) = Client::init_app(AppId(480)).unwrap();
-    let _steam_id = _client.user().steam_id().raw().to_string();
-    _steam_id
-}
+use database::App;
+use state::{AppState, ServiceAccess};
+use tauri::{AppHandle, Manager, State};
 
 #[tokio::main]
 async fn main() {
-    let _ = get_steam_app_list().await;
-    let steamid = get_steam_id();
-    println!("{}", steamid);
-
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_steam_id])
+        .manage(AppState {
+            db: Default::default(),
+        })
+        .invoke_handler(tauri::generate_handler![
+            cmd_request_data,
+            cmd_populate_data,
+            cmd_query_id
+        ])
+        .setup(|app| {
+            let handle = app.handle();
+
+            let app_state: State<AppState> = handle.state();
+
+            let db = database::init_db().expect("Failed to open database connection");
+
+            *app_state.db.lock().unwrap() = Some(db);
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-struct App {
-    appid: i32,
-    name: String,
-    last_modified: i32,
-    price_change_number: i32,
-}
+#[tauri::command]
+async fn cmd_request_data(_app_handle: AppHandle) -> Vec<App> {
+    let mut applist: Vec<App> = Vec::new();
 
-async fn get_steam_app_list() -> Result<(), Error> {
-    let _url =
-        "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json";
-    let _response = reqwest::get(_url).await?;
-
-    if _response.status().is_success() {
-        let apps: Vec<App> = _response.json().await?;
-        let _ = create_db(apps);
-        // for (_index, app) in apps.iter().enumerate() {
-        //     println!("App: {:?}", app.name);
-        // }
-    } else {
-        println!("Failed: {}", _response.status());
-    }
-
-    Ok(())
-}
-
-fn create_db(_apps: Vec<App>) -> Result<()> {
-    let mut conn = Connection::open_in_memory().expect("Failed to open database connection");
-
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS apps (
-            appid INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            last_modified INTEGER NOT NULL,
-            price_change_number INTEGER NOT NULL
-        )",
-        (),
-    )?;
-
-    let _t = conn.transaction()?;
-    {
-        let mut _insertion_sql = _t.prepare("INSERT INTO apps (appid, name, last_modified, price_change_number) VALUES (?, ?, ?, ?)")?;
-
-        for _app in _apps {
-            let _ = _insertion_sql.execute((
-                &_app.appid,
-                &_app.name,
-                &_app.last_modified,
-                &_app.price_change_number,
-            ));
+    match database::request_data().await {
+        Ok(app) => {
+            applist.extend(app);
         }
-    }
-
-    _t.commit()?;
-
-    match fetch_row_by_id(&conn, 440) {
-
-        Ok(row) => {
-            println!("Found game: {:?}", row);
-        },
         Err(e) => {
             eprintln!("Error: {}", e);
         }
-
     }
 
-    Ok(())
+    applist
 }
 
-fn fetch_row_by_id(conn: &Connection, appid: i32) -> Result<App> {
-    let mut _fetch_sql = conn.prepare(
-        "SELECT appid, name, last_modified, price_change_number FROM apps WHERE appid = ?",
-    )?;
+#[tauri::command]
+async fn cmd_populate_data(app_handle: AppHandle, apps: Vec<App>) {
+    let _ = app_handle.db_mut(|db| database::populate_data(db, apps));
+}
 
-    let row = _fetch_sql.query_row(&[&appid], |row| {
-        Ok(App {
-            appid: row.get(0)?,
-            name: row.get(1)?,
-            last_modified: row.get(2)?,
-            price_change_number: row.get(3)?,
-        })
-    })?;
-
-    Ok(row)
+#[tauri::command]
+async fn cmd_query_id(app_handle: AppHandle, appid: i32) -> App {
+    match app_handle.db_mut(|db| database::query_id(db, appid)) {
+        Ok(app) => {
+            app
+        }
+        Err(e) => {
+            App {
+                appid: 0,
+                name: e.to_string(),
+                last_modified: 0,
+                price_change_number: 0,
+            }
+        }
+    }
 }
