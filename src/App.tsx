@@ -1,13 +1,18 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 
-import Search from './components/Search/';
+import Search from "./components/Search/";
+import Status from "./components/Status";
 
 import "./App.css";
 
 function App() {
-  // const [steamID, setSteamID] = useState<string>("")
+  const [activeID, setActiveID] = useState<number>(0)
 
+	function handleDropdownClick(newID: number) {
+		setActiveID(newID);
+	}
+		
   useEffect(() => {
     invoke("cmd_request_data").then((response) => {
       invoke("cmd_populate_data", { apps: response }).then(() => {
@@ -16,19 +21,10 @@ function App() {
     });
   }, []);
 
-  function handleClick() {
-    invoke("cmd_query_name", { name: "Dark Souls" }).then((response) => {
-      console.log("RESPONSE: ", response);
-    });
-  }
-
   return (
     <>
-      <button onClick={handleClick}>Click</button>
-
-			<Search />
-
-
+      <Search onDropdownClick={handleDropdownClick} />
+			<Status appid={activeID} />
     </>
   );
 }
