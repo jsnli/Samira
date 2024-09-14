@@ -21,10 +21,27 @@ function App() {
     });
   }, []);
 
+	function handleStart() {
+		invoke("cmd_start").then(() => {
+			console.log("Starting..");
+		});
+	}
+
+
+	function handleEnd() {
+		invoke("cmd_get_info").then(() => {
+			console.log("End..");
+		});
+	}
+
   return (
     <>
       <Search onDropdownClick={handleDropdownClick} />
 			<Status appid={activeID} />
+			<button onClick={handleStart}>start</button>
+<button onClick={handleEnd}>end</button>
+
+			
     </>
   );
 }
