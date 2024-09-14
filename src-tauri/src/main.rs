@@ -4,6 +4,7 @@
 
 mod database;
 mod state;
+mod steam;
 
 use database::App;
 use state::{AppState, ServiceAccess};
@@ -14,12 +15,15 @@ async fn main() {
     tauri::Builder::default()
         .manage(AppState {
             db: Default::default(),
+            client: Default::default(),
         })
         .invoke_handler(tauri::generate_handler![
             cmd_request_data,
             cmd_populate_data,
             cmd_query_id,
             cmd_query_name,
+            cmd_start,
+            cmd_get_info,
         ])
         .setup(|app| {
             let handle = app.handle();
@@ -29,6 +33,7 @@ async fn main() {
             let db = database::init_db().expect("Failed to open database connection");
 
             *app_state.db.lock().unwrap() = Some(db);
+
             Ok(())
         })
         .run(tauri::generate_context!())
@@ -79,4 +84,27 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
             empty
         }
     }
+}
+
+#[tauri::command]
+fn cmd_start(app_handle: AppHandle) {
+    let state: State<AppState> = app_handle.state();
+    *state.client.lock().unwrap() = Some(steam::start(1966900));
+}
+#[tauri::command]
+fn cmd_get_info(app_handle: AppHandle) {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+
+    match client {
+        Some(client) => {
+            println!("Client found");
+            steam::get_info(client)
+        }
+        None => {
+            println!("No Client Found");
+        }
+    }
+
+
 }
