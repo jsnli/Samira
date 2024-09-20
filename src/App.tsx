@@ -7,12 +7,12 @@ import Status from "./components/Status";
 import "./App.css";
 
 function App() {
-  const [activeID, setActiveID] = useState<number>(0)
+  const [activeID, setActiveID] = useState<number>(0);
 
-	function handleDropdownClick(newID: number) {
-		setActiveID(newID);
-	}
-		
+  function handleDropdownClick(newID: number) {
+    setActiveID(newID);
+  }
+
   useEffect(() => {
     invoke("cmd_request_data").then((response) => {
       invoke("cmd_populate_data", { apps: response }).then(() => {
@@ -21,27 +21,24 @@ function App() {
     });
   }, []);
 
-	function handleStart() {
-		invoke("cmd_start").then(() => {
-			console.log("Starting..");
-		});
-	}
+  function handleStart() {
+    invoke("cmd_start").then(() => {
+      console.log("Starting..");
+    });
+  }
 
-
-	function handleEnd() {
-		invoke("cmd_get_info").then(() => {
-			console.log("End..");
-		});
-	}
+  function handleEnd() {
+    invoke("cmd_load_achievements").then(() => {
+      console.log("End..");
+    });
+  }
 
   return (
     <>
       <Search onDropdownClick={handleDropdownClick} />
-			<Status appid={activeID} />
-			<button onClick={handleStart}>start</button>
-<button onClick={handleEnd}>end</button>
-
-			
+      <Status appid={activeID} />
+      <button onClick={handleStart}>start</button>
+      <button onClick={handleEnd}>end</button>
     </>
   );
 }

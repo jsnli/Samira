@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./index.css";
 
@@ -17,6 +17,8 @@ function Search({ onDropdownClick }: SearchProps) {
   const [query, setQuery] = useState("");
   const [applist, setApplist] = useState<App[]>([]);
   const [active, setActive] = useState<boolean>(false);
+
+	const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let debounce = setTimeout(() => {
@@ -46,8 +48,11 @@ function Search({ onDropdownClick }: SearchProps) {
     setQuery(event.target.value);
   }
 
-	function handleItemClick(appid: number) {
-		onDropdownClick(appid);
+	function handleItemClick(app: App) {
+		if (inputRef.current) {
+			inputRef.current.value = app.name;
+		}	
+		onDropdownClick(app.appid);
 		setActive(false);
 	}
 
@@ -60,6 +65,7 @@ function Search({ onDropdownClick }: SearchProps) {
     >
       <input
         type="text"
+				ref={inputRef}
         placeholder="Search by name"
         className="search-input"
         onChange={handleChange}
@@ -71,7 +77,7 @@ function Search({ onDropdownClick }: SearchProps) {
           <li
             className="search-item"
             key={index}
-            onClick={() => handleItemClick(app.appid)}
+            onClick={() => handleItemClick(app)}
           >
             {app.name} - {app.appid}
           </li>
