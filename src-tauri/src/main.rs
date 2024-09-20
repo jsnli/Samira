@@ -23,7 +23,7 @@ async fn main() {
             cmd_query_id,
             cmd_query_name,
             cmd_start,
-            cmd_get_info,
+            cmd_load_achievements,
         ])
         .setup(|app| {
             let handle = app.handle();
@@ -89,22 +89,23 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
 #[tauri::command]
 fn cmd_start(app_handle: AppHandle) {
     let state: State<AppState> = app_handle.state();
-    *state.client.lock().unwrap() = Some(steam::start(1966900));
+    *state.client.lock().unwrap() = Some(steam::start(1245620));
 }
+
 #[tauri::command]
-fn cmd_get_info(app_handle: AppHandle) {
+fn cmd_load_achievements(app_handle: AppHandle) {
     let state: State<AppState> = app_handle.state();
     let client = state.client.lock().unwrap().clone();
 
     match client {
         Some(client) => {
             println!("Client found");
-            steam::get_info(client)
+            steam::load_achievements(client)
         }
         None => {
             println!("No Client Found");
         }
     }
-
-
+        
+     
 }
