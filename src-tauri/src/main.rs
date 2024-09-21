@@ -7,6 +7,7 @@ mod state;
 mod steam;
 
 use database::App;
+use steam::Achievement;
 use state::{AppState, ServiceAccess};
 use tauri::{AppHandle, Manager, State};
 
@@ -22,7 +23,7 @@ async fn main() {
             cmd_populate_data,
             cmd_query_id,
             cmd_query_name,
-            cmd_start,
+            cmd_start_client,
             cmd_load_achievements,
         ])
         .setup(|app| {
@@ -87,13 +88,13 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
 }
 
 #[tauri::command]
-fn cmd_start(app_handle: AppHandle) {
+fn cmd_start_client(app_handle: AppHandle) {
     let state: State<AppState> = app_handle.state();
-    *state.client.lock().unwrap() = Some(steam::start(1245620));
+    *state.client.lock().unwrap() = Some(steam::start_client(1966900));
 }
 
 #[tauri::command]
-fn cmd_load_achievements(app_handle: AppHandle) {
+fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
     let state: State<AppState> = app_handle.state();
     let client = state.client.lock().unwrap().clone();
 
@@ -104,6 +105,7 @@ fn cmd_load_achievements(app_handle: AppHandle) {
         }
         None => {
             println!("No Client Found");
+            Vec::new()
         }
     }
         
