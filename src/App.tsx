@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { invoke } from "@tauri-apps/api/tauri";
 
 import Search from "./components/Search/";
@@ -22,14 +23,14 @@ function App() {
   }, []);
 
   function handleStart() {
-    invoke("cmd_start").then(() => {
+    invoke("cmd_start_client").then(() => {
       console.log("Starting..");
     });
   }
 
   function handleEnd() {
-    invoke("cmd_load_achievements").then(() => {
-      console.log("End..");
+    invoke("cmd_load_achievements").then((response) => {
+      console.log(response);
     });
   }
 
@@ -39,7 +40,7 @@ function App() {
       <Status appid={activeID} />
       <button onClick={handleStart}>start</button>
       <button onClick={handleEnd}>end</button>
-    </>
+    </> 
   );
 }
 
