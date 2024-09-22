@@ -88,9 +88,11 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
 }
 
 #[tauri::command]
-fn cmd_start_client(app_handle: AppHandle) {
+fn cmd_start_client(app_handle: AppHandle, appid: u32) {
     let state: State<AppState> = app_handle.state();
-    *state.client.lock().unwrap() = Some(steam::start_client(1966900));
+    let c = state.client.lock().unwrap().take();
+    drop(c);
+    *state.client.lock().unwrap() = Some(steam::start_client(appid));
 }
 
 #[tauri::command]
