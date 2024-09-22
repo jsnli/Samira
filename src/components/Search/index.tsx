@@ -23,7 +23,7 @@ function Search({ onDropdownClick }: SearchProps) {
   useEffect(() => {
     let debounce = setTimeout(() => {
       search(query);
-    }, 300);
+    }, 1000);
 
     return () => {
       clearTimeout(debounce);
@@ -39,6 +39,7 @@ function Search({ onDropdownClick }: SearchProps) {
   }
 
   function search(value: string) {
+		if (!value.length) return;
     invoke("cmd_query_name", { name: value }).then((response) => {
       setApplist(response as App[]);
     });
