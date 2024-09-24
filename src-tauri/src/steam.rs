@@ -3,6 +3,7 @@ use steamworks::{AppId, Client, ClientManager};
 
 #[derive(Serialize, Deserialize)]
 pub struct Achievement {
+    pub api_name: String,
     pub name: String,
     pub desc: String,
     pub status: bool,
@@ -28,6 +29,7 @@ pub fn load_achievements(client: Client<ClientManager>) -> Vec<Achievement> {
     for name in names {
         let achievement_helper = user_stats.achievement(&name);
         let a: Achievement = Achievement {
+            api_name: name.clone(),
             name: achievement_helper
                 .get_achievement_display_attribute("name")
                 .unwrap()
