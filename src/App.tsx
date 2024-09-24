@@ -47,9 +47,15 @@ function App() {
 
 	return (
 		<>
-			<Status appid={activeID} />
-			<Search onDropdownClick={handleDropdownClick} />
-			<List items={achievements} /> 
+			<div className="sidebar">
+				<Status appid={activeID} />
+				<Search onDropdownClick={handleDropdownClick} />
+			</div>
+			<div className="main">
+				<List items={achievements} /> 
+			</div>
+			
+
 		</>
 	);
 }

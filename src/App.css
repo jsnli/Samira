@@ -1,22 +1,42 @@
 :root {
-  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  color: #f6f6f6;
-  background-color: #0f0f0f;
+	font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: 400;
+	color: #f6f6f6;
+	background-color: #0f0f0f;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+
+	position: relative;
 }
 
 .body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+	margin: 0;
+	display: flex;
+	place-items: center;
+	min-width: 320px;
+	min-height: 100vh;
+}
+
+.sidebar {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 300px;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.main {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 980px;
+	padding: 10px;
+	box-sizing: border-box;
 }
