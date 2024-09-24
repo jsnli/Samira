@@ -7,7 +7,7 @@ interface StatusProps {
 function Status({appid}: StatusProps) {
 	return (
 		<>
-			<span>Status: {appid}</span>
+			<p>Status: {appid}</p>
 		</>
 	)
 }

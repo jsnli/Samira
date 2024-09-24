@@ -1,23 +1,22 @@
 import { useState, useEffect } from "react";
-
 import { invoke } from "@tauri-apps/api/tauri";
 
 import Search from "./components/Search/";
 import Status from "./components/Status";
+import List from "./components/List";
 
 import "./App.css";
 
+interface Achievement {
+	api_name: string;
+	name: string;
+	desc: string;
+	status: boolean;
+}
+
 function App() {
 	const [activeID, setActiveID] = useState<number>(0);
-
-	function handleDropdownClick(newID: number) {
-		if (newID > 0) {
-			invoke("cmd_start_client", { appid: newID }).then(() => {
-				console.log("Starting..");
-				setActiveID(newID);
-			});
-		}
-	}
+	const [achievements, setAchievements] = useState<Achievement[]>([]);
 
 	useEffect(() => {
 		invoke("cmd_request_data").then((response) => {
@@ -27,16 +26,30 @@ function App() {
 		});
 	}, []);
 
-	// function handleEnd() {
-	// 	invoke("cmd_load_achievements").then((response) => {
-	// 		console.log(response);
-	// 	});
-	// }
+	function handleDropdownClick(newID: number) {
+		if (newID > 0) {
+			invoke("cmd_start_client", { appid: newID }).then(() => {
+				console.log("Starting..");
+				setActiveID(newID);
+				LoadAchievements();
+			});
+		}
+	}
+
+	function LoadAchievements() {
+		console.log("Loading,,");
+		invoke("cmd_load_achievements").then((response) => {
+			/* console.log(response); */
+			const data = response as Achievement[];
+			setAchievements(data);
+		});
+	}
 
 	return (
 		<>
 			<Status appid={activeID} />
 			<Search onDropdownClick={handleDropdownClick} />
+			<List items={achievements} /> 
 		</>
 	);
 }
