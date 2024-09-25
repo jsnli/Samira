@@ -15,13 +15,13 @@ interface Achievement {
 }
 
 function App() {
-	const [activeID, setActiveID] = useState<number>(0);
 	const [achievements, setAchievements] = useState<Achievement[]>([]);
+	const [statusMessage, setStatusMessage] = useState<string>("");
 
 	useEffect(() => {
 		invoke("cmd_request_data").then((response) => {
 			invoke("cmd_populate_data", { apps: response }).then(() => {
-				console.log("Database Ready.");
+				setStatusMessage("Database ready");
 			});
 		});
 	}, []);
@@ -29,30 +29,29 @@ function App() {
 	function handleDropdownClick(newID: number) {
 		if (newID > 0) {
 			invoke("cmd_start_client", { appid: newID }).then(() => {
-				console.log("Starting..");
-				setActiveID(newID);
+				setStatusMessage("Starting client");
 				LoadAchievements();
 			});
 		}
 	}
 
 	function LoadAchievements() {
-		console.log("Loading,,");
 		invoke("cmd_load_achievements").then((response) => {
 			/* console.log(response); */
 			const data = response as Achievement[];
 			setAchievements(data);
+			setStatusMessage("Achievements loaded");
 		});
 	}
 
 	return (
 		<>
 			<div className="sidebar">
-				<Status appid={activeID} />
+				<Status message={statusMessage} />
 				<Search onDropdownClick={handleDropdownClick} />
 			</div>
 			<div className="main">
-				<List items={achievements} /> 
+				<List achievements={achievements} /> 
 			</div>
 			
 
