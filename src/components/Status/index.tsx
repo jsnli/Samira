@@ -1,13 +1,14 @@
 import './index.css';
 
+
 interface StatusProps {
-	appid: number; 
+	message: string;
 }
 
-function Status({appid}: StatusProps) {
+function Status({message}: StatusProps) {
 	return (
 		<>
-			<p>Status: {appid}</p>
+			<p>Status: {message}</p>
 		</>
 	)
 }
