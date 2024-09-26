@@ -13,16 +13,11 @@ interface ListProps {
 }
 
 function List({ achievements }: ListProps) {
-	const [items, setItems] = useState<Achievement[]>(achievements);
-
-	function testfn() {
-		setItems(achievements);
-		console.log("ach: ", achievements);
-		console.log("items: ", items);
-	}
+	const [items, setItems] = useState<Achievement[]>([]);
 
 	useEffect(() => {
-		setItems(achievements);
+		const achievementsClone = structuredClone(achievements);
+		setItems(achievementsClone);
 	}, [achievements]);
 
 	function handleCheckbox( index: number ) {
@@ -31,9 +26,13 @@ function List({ achievements }: ListProps) {
 		setItems(newItems);
 	}
 
+	function apply() {
+		console.log("apply");
+	}
+
 	return (
 		<>
-			<button onClick={testfn}>Apply Changes</button>
+			<button onClick={apply}>Apply Changes</button>
 			<ul className="list">
 				{items.map((item, index) => (
 					<li key={index}>
@@ -41,7 +40,7 @@ function List({ achievements }: ListProps) {
 							<input
 								type="checkbox"
 								checked={item.status}
-								onChange={(event) => handleCheckbox(index)}
+								onChange={() => handleCheckbox(index)}
 							/>
 							<div>
 								<span className="name">
