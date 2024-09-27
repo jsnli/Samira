@@ -12,6 +12,7 @@ pub struct Achievement {
 pub fn start_client(appid: u32) -> Client<ClientManager> {
     let (client, _single) = Client::init_app(AppId(appid)).unwrap();
     let _user_stats = client.user_stats();
+    let _ = _user_stats.request_current_stats();
 
     client
 }
@@ -45,4 +46,20 @@ pub fn load_achievements(client: Client<ClientManager>) -> Vec<Achievement> {
     }
 
     AchievementList
+}
+
+pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool ) {
+    let user_stats = client.user_stats();
+    let achievement = user_stats.achievement(&name);
+    if unlocked {
+        let _ = achievement.set();
+    } else {
+        let _ = achievement.clear();
+    }
+    let _ = user_stats.store_stats();
+}
+
+pub fn store_stats(client: Client<ClientManager>) {
+    let user_stats = client.user_stats();
+    let _ = user_stats.store_stats();
 }
