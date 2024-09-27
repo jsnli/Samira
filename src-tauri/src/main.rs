@@ -7,8 +7,8 @@ mod state;
 mod steam;
 
 use database::App;
-use steam::Achievement;
 use state::{AppState, ServiceAccess};
+use steam::Achievement;
 use tauri::{AppHandle, Manager, State};
 
 #[tokio::main]
@@ -25,6 +25,8 @@ async fn main() {
             cmd_query_name,
             cmd_start_client,
             cmd_load_achievements,
+            cmd_commit_achievement,
+            cmd_store_stats,
         ])
         .setup(|app| {
             let handle = app.handle();
@@ -110,6 +112,34 @@ fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
             Vec::new()
         }
     }
-        
-     
+}
+
+#[tauri::command]
+fn cmd_commit_achievement(app_handle: AppHandle, name: String, unlocked: bool) {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+    match client {
+        Some(client) => {
+            println!("Client found");
+            let _ = steam::commit_achievement(client, name, unlocked);
+        }
+        None => {
+            println!("No Client Found");
+        }
+    }
+}
+
+#[tauri::command]
+fn cmd_store_stats(app_handle: AppHandle) {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+    match client {
+        Some(client) => {
+            println!("Client found");
+            let _ = steam::store_stats(client);
+        }
+        None => {
+            println!("No Client Found");
+        }
+    }
 }
