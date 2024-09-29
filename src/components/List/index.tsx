@@ -47,9 +47,9 @@ function List({ achievements }: ListProps) {
   }
 
   return (
-    <>
-      <button onClick={apply}>Apply Changes</button>
-      <ul className="list">
+    <div className="list">
+      <button className="list-apply" onClick={apply}>Apply Changes</button>
+      <ul>
         {items.map((item, index) => (
           <li key={index}>
             <label>
@@ -68,7 +68,7 @@ function List({ achievements }: ListProps) {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 

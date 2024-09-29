@@ -16,21 +16,26 @@ interface Achievement {
 
 function App() {
 	const [achievements, setAchievements] = useState<Achievement[]>([]);
-	const [statusMessage, setStatusMessage] = useState<string>("");
+	const [statusMessage, setStatusMessage] =
+		useState<string>("Loading database.");
 
 	useEffect(() => {
 		invoke("cmd_request_data").then((response) => {
 			invoke("cmd_populate_data", { apps: response }).then(() => {
-				setStatusMessage("Database ready");
+				setStatusMessage("Database ready.");
 			});
 		});
 	}, []);
 
 	function handleDropdownClick(newID: number) {
 		if (newID > 0) {
-			invoke("cmd_start_client", { appid: newID }).then(() => {
-				setStatusMessage("Starting client");
-				LoadAchievements();
+			invoke("cmd_start_client", { appid: newID }).then((response) => {
+				if (response) {
+					setStatusMessage("Starting client.");
+					LoadAchievements();
+				} else {
+					setStatusMessage("Error loading client. Steam must be running and you must own the game selected.");
+				}
 			});
 		}
 	}
@@ -40,21 +45,19 @@ function App() {
 			/* console.log(response); */
 			const data = response as Achievement[];
 			setAchievements(data);
-			setStatusMessage("Achievements loaded");
+			setStatusMessage("Achievements loaded.");
 		});
 	}
 
 	return (
 		<>
 			<div className="sidebar">
-				<Status message={statusMessage} />
 				<Search onDropdownClick={handleDropdownClick} />
+				<Status message={statusMessage} />
 			</div>
 			<div className="main">
-				<List achievements={achievements} /> 
+				<List achievements={achievements} />
 			</div>
-			
-
 		</>
 	);
 }
