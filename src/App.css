@@ -28,8 +28,10 @@
 	top: 0;
 	left: 0;
 	width: 300px;
-	padding: 10px;
+	height: 100vh;
 	box-sizing: border-box;
+	padding: 15px;
+	background: #171a21;
 }
 
 .main {
@@ -37,6 +39,8 @@
 	top: 0;
 	right: 0;
 	width: 980px;
-	padding: 10px;
+	height: 100vh;
+	padding: 15px;
 	box-sizing: border-box;
+	overflow: hidden;
 }

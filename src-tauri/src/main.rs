@@ -90,7 +90,7 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
 }
 
 #[tauri::command]
-fn cmd_start_client(app_handle: AppHandle, appid: u32) {
+fn cmd_start_client(app_handle: AppHandle, appid: u32) -> bool{
     let state: State<AppState> = app_handle.state();
     let c = state.client.lock().unwrap().take();
     drop(c);
@@ -98,9 +98,11 @@ fn cmd_start_client(app_handle: AppHandle, appid: u32) {
     match steam::start_client(appid) {
         Ok(client) => {
             *state.client.lock().unwrap() = Some(client);
+            true
         },
         Err(e) => {
             println!("Failed to start client: {}", e);
+            false
         }
     }
     
