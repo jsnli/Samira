@@ -9,12 +9,24 @@ pub struct Achievement {
     pub status: bool,
 }
 
-pub fn start_client(appid: u32) -> Client<ClientManager> {
-    let (client, _single) = Client::init_app(AppId(appid)).unwrap();
-    let _user_stats = client.user_stats();
-    let _ = _user_stats.request_current_stats();
+use std::panic::{self, AssertUnwindSafe};
+pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
+    let result = panic::catch_unwind(AssertUnwindSafe(|| {
+        let (client, _single) = Client::init_app(AppId(appid)).unwrap();
+        let _user_stats = client.user_stats();
+        let _ = _user_stats.request_current_stats();
 
-    client
+        client
+    }));
+
+    match result {
+        Ok(client) => Ok(client),
+        Err(panic_error) => Err(format!("Panic occured: {:?}", panic_error)),
+        
+    }
+
+    
+
 }
 
 pub fn load_achievements(client: Client<ClientManager>) -> Vec<Achievement> {
@@ -48,7 +60,7 @@ pub fn load_achievements(client: Client<ClientManager>) -> Vec<Achievement> {
     AchievementList
 }
 
-pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool ) {
+pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool) {
     let user_stats = client.user_stats();
     let achievement = user_stats.achievement(&name);
     if unlocked {
