@@ -94,7 +94,16 @@ fn cmd_start_client(app_handle: AppHandle, appid: u32) {
     let state: State<AppState> = app_handle.state();
     let c = state.client.lock().unwrap().take();
     drop(c);
-    *state.client.lock().unwrap() = Some(steam::start_client(appid));
+
+    match steam::start_client(appid) {
+        Ok(client) => {
+            *state.client.lock().unwrap() = Some(client);
+        },
+        Err(e) => {
+            println!("Failed to start client: {}", e);
+        }
+    }
+    
 }
 
 #[tauri::command]
