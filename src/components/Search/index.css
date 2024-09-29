@@ -11,10 +11,11 @@
 	height: 100%;
 	padding: 0 5px;
 	color: #f6f6f6;
-	background-color: #2f2f2f;
+	background-color: transparent;
 	border: none;
+	border-bottom: 1px solid #f6f6f6; 
 	box-sizing: border-box;
-	box-shadow: none;
+	box-shadow: none;	
 }
 
 .search-input::placeholder {
@@ -31,13 +32,14 @@
 
 .search-dropdown {
 	width: 100%;
-	background: #2f2f2f;
+	background: #1b2838;
 	list-style-type: none;
-	padding: 0;
+	padding: 15px;
+	box-sizing: border-box;
 	position: absolute;
 	left: 0;
 	top: 50px;
-	max-height: 50vh;
+	height: 475px;
 	overflow-y: auto;
 }
 
@@ -46,5 +48,5 @@
 }
 
 .search-item:hover {
-	background: #202020;
+	background: #2a475e;
 }
