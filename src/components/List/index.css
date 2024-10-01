@@ -46,10 +46,12 @@ label div {
 
 label div .name {
 	display: block;
-	font-size: 20px;
+	font-size: 18px;
+	color: #f6f6f6;
 }
 
 label div .desc {
 	display: block;
 	font-size: 12px;
+	color: #545454;
 }
