@@ -27,6 +27,7 @@ async fn main() {
             cmd_load_achievements,
             cmd_commit_achievement,
             cmd_store_stats,
+            cmd_load_statistics,
         ])
         .setup(|app| {
             let handle = app.handle();
@@ -116,7 +117,7 @@ fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
     match client {
         Some(client) => {
             println!("Client found");
-            steam::load_achievements(client)
+            steam::load_achievements(client).unwrap_or(Vec::new())
         }
         None => {
             println!("No Client Found");
@@ -154,3 +155,12 @@ fn cmd_store_stats(app_handle: AppHandle) {
         }
     }
 }
+
+#[tauri::command]
+fn cmd_load_statistics(appid: u32) {
+    let data: Vec<String> = steam::load_statistics(appid);
+}
+
+
+
+
