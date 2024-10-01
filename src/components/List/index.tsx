@@ -60,7 +60,7 @@ function List({ achievements }: ListProps) {
               />
               <div>
                 <span className="name">
-                  {index} - {item.name} - {item.status}
+                	{item.name}
                 </span>
                 <span className="desc">{item.desc}</span>
               </div>
