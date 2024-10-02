@@ -8,7 +8,7 @@ mod steam;
 
 use database::App;
 use state::{AppState, ServiceAccess};
-use steam::Achievement;
+use steam::{Achievement, Stat};
 use tauri::{AppHandle, Manager, State};
 
 #[tokio::main]
@@ -91,7 +91,7 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
 }
 
 #[tauri::command]
-fn cmd_start_client(app_handle: AppHandle, appid: u32) -> bool{
+fn cmd_start_client(app_handle: AppHandle, appid: u32) -> bool {
     let state: State<AppState> = app_handle.state();
     let c = state.client.lock().unwrap().take();
     drop(c);
@@ -100,13 +100,12 @@ fn cmd_start_client(app_handle: AppHandle, appid: u32) -> bool{
         Ok(client) => {
             *state.client.lock().unwrap() = Some(client);
             true
-        },
+        }
         Err(e) => {
             println!("Failed to start client: {}", e);
             false
         }
     }
-    
 }
 
 #[tauri::command]
@@ -157,10 +156,18 @@ fn cmd_store_stats(app_handle: AppHandle) {
 }
 
 #[tauri::command]
-fn cmd_load_statistics(appid: u32) {
-    let data: Vec<String> = steam::load_statistics(appid);
+fn cmd_load_statistics(app_handle: AppHandle, appid: u32) -> Vec<Stat> {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+
+    match client {
+        Some(client) => {
+            println!("Client found");
+            steam::load_statistics(client, appid)
+        }
+        None => {
+            println!("No Client Found");
+            Vec::new()
+        }
+    }
 }
-
-
-
-
