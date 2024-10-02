@@ -4,7 +4,7 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
-use steamworks::{AppId, Client, ClientManager};
+use steamworks::{Client, ClientManager};
 
 #[derive(Serialize, Deserialize)]
 pub struct Achievement {
@@ -22,10 +22,10 @@ pub struct Stat {
 
 pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let (client, _single) = Client::init_app(AppId(appid)).unwrap();
-        let _user_stats = client.user_stats();
-        let _ = _user_stats.request_current_stats();
-
+        let client = Client::init_app(appid).unwrap();
+        let user_stats = client.user_stats();
+        let steam_user_id: u64 = client.user().steam_id().raw();
+        user_stats.request_user_stats(steam_user_id);
         client
     }));
 
