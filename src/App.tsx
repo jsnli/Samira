@@ -33,6 +33,7 @@ function App() {
 				if (response) {
 					setStatusMessage("Starting client.");
 					LoadAchievements();
+					LoadStatistics(newID);
 				} else {
 					setStatusMessage("Error loading client. Steam must be running and you must own the game selected.");
 				}
@@ -47,6 +48,12 @@ function App() {
 			setAchievements(data);
 			setStatusMessage("Achievements loaded.");
 		});
+	}
+
+	function LoadStatistics(newID: number) {
+		invoke("cmd_load_statistics", { appid: newID }).then((response) => {
+			console.log(response);
+		})
 	}
 
 	return (

@@ -1,4 +1,9 @@
+use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::env;
+use std::fs::File;
+use std::io::Read;
+use std::panic::{self, AssertUnwindSafe};
 use steamworks::{AppId, Client, ClientManager};
 
 #[derive(Serialize, Deserialize)]
@@ -9,7 +14,12 @@ pub struct Achievement {
     pub status: bool,
 }
 
-use std::panic::{self, AssertUnwindSafe};
+#[derive(Serialize, Deserialize)]
+pub struct Stat {
+    pub api_name: String,
+    pub value: i32,
+}
+
 pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let (client, _single) = Client::init_app(AppId(appid)).unwrap();
@@ -79,8 +89,52 @@ pub fn store_stats(client: Client<ClientManager>) {
     let _ = user_stats.store_stats();
 }
 
-pub fn load_statistics(appid: u32) -> Vec<String> {
-    println!("loading stats");
-    let s: Vec<String> = Vec::new();
-    s
+pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
+    let user_stats = client.user_stats();
+
+    let re = Regex::new(r"type1name(.*?)display").unwrap();
+
+    let mut stats: Vec<Stat> = Vec::new();
+
+    match load_schema(appid) {
+        Ok(data) => {
+            let captures: Vec<String> = re
+                .captures_iter(&data)
+                .map(|caps| caps[1].to_string())
+                .collect();
+            for capture in captures {
+                let capture_value: i32 = user_stats.get_stat_i32(&capture).unwrap_or(0);
+
+                let stat: Stat = Stat {
+                    api_name: capture,
+                    value: capture_value,
+                };
+
+                stats.push(stat);
+            }
+        }
+        Err(e) => {
+            println!("{}", e);
+        }
+    }
+    stats
+}
+
+pub fn load_schema(appid: u32) -> std::io::Result<String> {
+    let name = env::var("USER").unwrap_or("root".to_string());
+    let path = format!(
+        "/home/{}/.steam/steam/appcache/stats/UserGameStatsSchema_{}.bin",
+        name, appid
+    );
+
+    let mut file = File::open(&path)?;
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)?;
+    let content = String::from_utf8_lossy(&buffer);
+    let cleaned: String = content
+        .chars()
+        .filter(|&c| c.is_ascii_graphic() || c.is_ascii_whitespace())
+        .collect();
+
+    Ok(cleaned)
 }
