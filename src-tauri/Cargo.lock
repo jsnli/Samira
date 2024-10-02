@@ -2033,6 +2033,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "paste"
+version = "1.0.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
+
+[[package]]
 name = "pathdiff"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2653,6 +2659,7 @@ dependencies = [
  "serde",
  "serde_json",
  "steamworks",
+ "steamworks-sys",
  "tauri",
  "tauri-build",
  "tokio",
@@ -2982,11 +2989,11 @@ dependencies = [
 [[package]]
 name = "steamworks"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a79d6f059322f73a4586cc2d0ca595ce1583104b2b1574ae1bb87f2c05bf4c67"
+source = "git+https://github.com/jsnli/steamworks-rs?branch=add-request-user-stats#591cb1df92f60aedb5a11dbe0f70b0a7e549f130"
 dependencies = [
  "bitflags 1.3.2",
  "lazy_static",
+ "paste",
  "steamworks-sys",
  "thiserror",
 ]
@@ -2994,8 +3001,7 @@ dependencies = [
 [[package]]
 name = "steamworks-sys"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ef6b00f8fe8eaaaff22cb9b70822a48c1a5d772bc682c202a57c0b438175845"
+source = "git+https://github.com/jsnli/steamworks-rs?branch=add-request-user-stats#591cb1df92f60aedb5a11dbe0f70b0a7e549f130"
 
 [[package]]
 name = "string_cache"
