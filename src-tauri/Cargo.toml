@@ -17,7 +17,8 @@ serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"
 tokio = { version = "1.40.0", features = ["full"] }
 rusqlite = { version = "0.32.1", features = ["bundled"] }
-steamworks = "0.11.0"
+steamworks = { git = "https://github.com/jsnli/steamworks-rs", branch = "add-request-user-stats" }
+steamworks-sys = { git = "https://github.com/jsnli/steamworks-rs", branch = "add-request-user-stats" }
 regex = "1.11.0"
 
 [features]
