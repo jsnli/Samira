@@ -4,7 +4,9 @@ use std::env;
 use std::fs::File;
 use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
-use steamworks::{Client, ClientManager};
+use std::sync::{Arc, Mutex};
+
+use steamworks::{Client, ClientManager, UserStatsReceived};
 
 #[derive(Serialize, Deserialize)]
 pub struct Achievement {
@@ -22,10 +24,34 @@ pub struct Stat {
 
 pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
+        let waiting = Arc::new(Mutex::new(true));
+        let waiting_clone = Arc::clone(&waiting);
+
         let client = Client::init_app(appid).unwrap();
         let user_stats = client.user_stats();
         let steam_user_id: u64 = client.user().steam_id().raw();
+
         user_stats.request_user_stats(steam_user_id);
+        client.register_callback(move |_data: UserStatsReceived| {
+            let mut waiting = waiting_clone.lock().unwrap();
+            *waiting = false;
+            println!("User Stats Received.");
+        });
+
+        client.run_callbacks();
+
+        // to-do: handle this more gracefully
+        for _ in 0..50 {
+            println!("calling");
+            client.run_callbacks();
+            ::std::thread::sleep(::std::time::Duration::from_millis(100));
+
+            let waiting = waiting.lock().unwrap();
+            if *waiting == false {
+                break;
+            }
+        }
+
         client
     }));
 
