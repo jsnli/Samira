@@ -10,7 +10,7 @@ interface App {
 }
 
 interface SearchProps {
-  onDropdownClick: (newID: number) => void;
+  onDropdownClick: (newID: number, newName: string) => void;
 }
 
 function Search({ onDropdownClick }: SearchProps) {
@@ -53,7 +53,7 @@ function Search({ onDropdownClick }: SearchProps) {
 		if (inputRef.current) {
 			inputRef.current.value = app.name;
 		}	
-		onDropdownClick(app.appid);
+		onDropdownClick(app.appid, app.name);
 		setActive(false);
 	}
 

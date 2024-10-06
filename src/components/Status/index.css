@@ -5,6 +5,9 @@
 	width: 100%;
 	padding: 15px;
 	box-sizing: border-box;
+
+	font-size: 12px;
+	z-index: 1;
 }
 
 .status p {
@@ -19,4 +22,17 @@
 	padding: 15px;
 	box-sizing: border-box;
 	overflow-y: auto;
+}
+
+.status-group {
+	display: block;
+	margin: 5px 0;
+}
+
+.status-group label {
+	font-weight: bold;
+}
+
+.status-group span {
+	padding-left: 15px;
 }
