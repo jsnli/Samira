@@ -8,7 +8,7 @@ mod steam;
 
 use database::App;
 use state::{AppState, ServiceAccess};
-use steam::{Achievement, Stat};
+use steam::{Achievement, Stat, User};
 use tauri::{AppHandle, Manager, State};
 
 #[tokio::main]
@@ -28,6 +28,7 @@ async fn main() {
             cmd_commit_achievement,
             cmd_store_stats,
             cmd_load_statistics,
+            cmd_retrieve_user,
         ])
         .setup(|app| {
             let handle = app.handle();
@@ -104,6 +105,23 @@ fn cmd_start_client(app_handle: AppHandle, appid: u32) -> bool {
         Err(e) => {
             println!("Failed to start client: {}", e);
             false
+        }
+    }
+}
+
+#[tauri::command]
+fn cmd_retrieve_user(app_handle: AppHandle) -> User {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+
+    match client {
+        Some(client) => {
+            println!("Client found");
+            steam::retrieve_user(client)
+        }
+        None => {
+            println!("No Client Found");
+            User::default()
         }
     }
 }
