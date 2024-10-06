@@ -22,6 +22,21 @@ pub struct Stat {
     pub value: i32,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct User {
+    user_name: String,
+    user_steam_id: u64,
+}
+
+impl Default for User {
+    fn default() -> Self {
+        User {
+            user_name: "No user found.".to_string(),
+            user_steam_id: 0
+        }
+    }
+}
+
 pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let waiting = Arc::new(Mutex::new(true));
@@ -58,6 +73,13 @@ pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
     match result {
         Ok(client) => Ok(client),
         Err(panic_error) => Err(format!("Panic occured: {:?}", panic_error)),
+    }
+}
+
+pub fn retrieve_user(client: Client<ClientManager>) -> User {
+    User {
+        user_name: client.friends().name(),
+        user_steam_id: client.user().steam_id().raw(),
     }
 }
 
