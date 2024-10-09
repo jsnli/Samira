@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 import { invoke } from "@tauri-apps/api/tauri";
-
-interface Achievement {
-  api_name: string;
-  name: string;
-  desc: string;
-  status: boolean;
-}
+import { Achievement } from "../../interfaces";
 
 interface ListProps {
   achievements: Achievement[];
