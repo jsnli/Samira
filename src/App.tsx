@@ -5,21 +5,8 @@ import Search from "./components/Search/";
 import Status from "./components/Status";
 import List from "./components/List";
 
+import {Achievement, Info} from "./interfaces";
 import "./App.css";
-
-interface Achievement {
-	api_name: string;
-	name: string;
-	desc: string;
-	status: boolean;
-}
-
-interface Info {
-	app_id: number;
-	app_name: string;
-	user_id: number;
-	user_name: string;
-}
 
 function App() {
 	const [achievements, setAchievements] = useState<Achievement[]>([]);
