@@ -19,6 +19,10 @@
 	box-shadow: none;	
 }
 
+.search-input:focus {
+	outline: none;
+}
+
 .search-input::placeholder {
 	line-height: 100%;
 }
@@ -40,7 +44,6 @@
 	position: absolute;
 	left: 0;
 	top: 50px;
-	min-height: 50px;
 	overflow-y: auto;
 }
 

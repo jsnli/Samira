@@ -15,6 +15,7 @@ interface StatusProps {
 function Status({ message, info }: StatusProps) {
 	return (
 		<div className="status">
+			<span>Information:</span>	
 			<table>
 				<tr>
 					<td>Game</td>
