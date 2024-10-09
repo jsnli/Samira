@@ -1,13 +1,7 @@
 import { ChangeEvent, useEffect, useState, useRef } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 import "./index.css";
-
-interface App {
-  appid: number;
-  name: string;
-  last_modified: number;
-  price_change_number: number;
-}
+import { App } from "../../interfaces";
 
 interface SearchProps {
   onDropdownClick: (newID: number, newName: string) => void;

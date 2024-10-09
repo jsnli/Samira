@@ -1,11 +1,5 @@
 import "./index.css";
-
-interface Info {
-	app_id: number;
-	app_name: string;
-	user_id: number;
-	user_name: string;
-}
+import { Info } from "../../interfaces";
 
 interface StatusProps {
 	message: string;
