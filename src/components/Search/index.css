@@ -39,7 +39,7 @@
 	width: 100%;
 	background: #1b2838;
 	list-style-type: none;
-	padding: 15px;
+	padding: 0px;
 	box-sizing: border-box;
 	position: absolute;
 	left: 0;
@@ -48,7 +48,7 @@
 }
 
 .search-item {
-	padding: 5px;
+	padding: 15px;
 }
 
 .search-item:hover {
