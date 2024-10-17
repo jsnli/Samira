@@ -3,7 +3,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 
 import Search from "./components/Search/";
 import Status from "./components/Status";
-import List from "./components/List";
+import AchievementView from "./components/AchievementView";
+import StatisticView from "./components/StatisticView";
 
 import {Achievement, Info} from "./interfaces";
 import "./App.css";
@@ -19,6 +20,8 @@ function App() {
 		user_name: "",
 	});
 
+	const [viewToggle, setViewToggle] = useState<boolean>(true);
+
 	useEffect(() => {
 		invoke("cmd_request_data").then((response) => {
 			invoke("cmd_populate_data", { apps: response }).then(() => {
@@ -26,6 +29,10 @@ function App() {
 			});
 		});
 	}, []);
+
+	function handleViewButton() {
+		setViewToggle(!viewToggle);
+	}
 
 	function handleDropdownClick(newID: number, newName: string) {
 		if (newID > 0) {
@@ -83,7 +90,16 @@ function App() {
 				<Status message={statusMessage} info={info} />
 			</div>
 			<div className="main">
-				<List achievements={achievements} />
+				<button onClick={handleViewButton}>Achievements / Statistics</button>
+				{ viewToggle
+					? (
+						<StatisticView />
+					)
+					: (
+						<AchievementView achievements={achievements} />
+					)
+
+				}
 			</div>
 		</>
 	);
