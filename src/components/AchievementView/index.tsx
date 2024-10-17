@@ -3,11 +3,11 @@ import "./index.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Achievement } from "../../interfaces";
 
-interface ListProps {
+interface AchievementViewProps {
   achievements: Achievement[];
 }
 
-function List({ achievements }: ListProps) {
+function AchievementView({ achievements }: AchievementViewProps) {
   const [items, setItems] = useState<Achievement[]>([]);
 
   useEffect(() => {
@@ -41,8 +41,8 @@ function List({ achievements }: ListProps) {
   }
 
   return (
-    <div className="list">
-      <button className="list-apply" onClick={apply}>Apply Changes</button>
+    <div className="achievement-view">
+      <button className="apply" onClick={apply}>Apply Changes</button>
       <ul>
         {items.map((item, index) => (
           <li key={index}>
@@ -66,4 +66,4 @@ function List({ achievements }: ListProps) {
   );
 }
 
-export default List;
+export default AchievementView;

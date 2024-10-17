@@ -5,6 +5,11 @@ export interface Achievement {
 	status: boolean;
 }
 
+export interface Stat {
+	api_name: string;
+	value: number;
+}
+
 export interface Info {
 	app_id: number;
 	app_name: string;
