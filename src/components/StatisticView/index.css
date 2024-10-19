@@ -14,7 +14,7 @@
 	margin: 0 0 10px 0;
 }
 
-label {
+.statistic-view label {
 	display: inline-block;
 	width: 250px;
 	height: 25px;
@@ -24,7 +24,7 @@ label {
 	overflow: hidden;
 }
 
-input {
+.statistic-view input {
 	display: inline-block;
 	width: 200px;
 	height: 25px;
@@ -37,6 +37,6 @@ input {
 	box-shadow: none;
 }
 
-input:focus {
+.statistic-view input:focus {
 	outline: none;
 }
