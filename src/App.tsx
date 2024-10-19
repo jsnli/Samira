@@ -6,11 +6,12 @@ import Status from "./components/Status";
 import AchievementView from "./components/AchievementView";
 import StatisticView from "./components/StatisticView";
 
-import {Achievement, Info} from "./interfaces";
+import {Achievement, Stat, Info} from "./interfaces";
 import "./App.css";
 
 function App() {
 	const [achievements, setAchievements] = useState<Achievement[]>([]);
+	const [stats, setStats] = useState<Stat[]>([]);
 	const [statusMessage, setStatusMessage] =
 		useState<string>("Loading database.");
 	const [info, setInfo] = useState<Info>({
@@ -63,6 +64,8 @@ function App() {
 	function LoadStatistics(newID: number) {
 		invoke("cmd_load_statistics", { appid: newID }).then((response) => {
 			console.log(response);
+			const data = response as Stat[];
+			setStats(data);
 		});
 	}
 
@@ -93,7 +96,7 @@ function App() {
 				<button onClick={handleViewButton}>Achievements / Statistics</button>
 				{ viewToggle
 					? (
-						<StatisticView />
+						<StatisticView stats={stats}/>
 					)
 					: (
 						<AchievementView achievements={achievements} />
