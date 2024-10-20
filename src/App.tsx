@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 
-import Search from "./components/Search/";
+import Search from "./components/Search";
 import Status from "./components/Status";
+import Tabs from "./components/Tabs";
 import AchievementView from "./components/AchievementView";
 import StatisticView from "./components/StatisticView";
 
@@ -21,7 +22,7 @@ function App() {
 		user_name: "",
 	});
 
-	const [viewToggle, setViewToggle] = useState<boolean>(true);
+	const [view, setView] = useState<"a"|"s">("a");
 
 	useEffect(() => {
 		invoke("cmd_request_data").then((response) => {
@@ -31,8 +32,10 @@ function App() {
 		});
 	}, []);
 
-	function handleViewButton() {
-		setViewToggle(!viewToggle);
+	function selectView(view: string) {
+		if (view == "a" || view == "s") {
+			setView(view);
+		}
 	}
 
 	function handleDropdownClick(newID: number, newName: string) {
@@ -54,7 +57,6 @@ function App() {
 
 	function LoadAchievements() {
 		invoke("cmd_load_achievements").then((response) => {
-			/* console.log(response); */
 			const data = response as Achievement[];
 			setAchievements(data);
 			setStatusMessage("Achievements loaded.");
@@ -90,19 +92,12 @@ function App() {
 		<>
 			<div className="sidebar">
 				<Search onDropdownClick={handleDropdownClick} />
+				<Tabs handleSelectView={selectView} />
 				<Status message={statusMessage} info={info} />
 			</div>
 			<div className="main">
-				<button onClick={handleViewButton}>Achievements / Statistics</button>
-				{ viewToggle
-					? (
-						<StatisticView stats={stats}/>
-					)
-					: (
-						<AchievementView achievements={achievements} />
-					)
-
-				}
+				{ view == "a" ? <AchievementView achievements={achievements} /> : null }
+				{ view == "s" ? <StatisticView stats={stats}/> : null }
 			</div>
 		</>
 	);
