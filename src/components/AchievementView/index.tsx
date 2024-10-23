@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./index.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Achievement } from "../../interfaces";
@@ -9,6 +9,7 @@ interface AchievementViewProps {
 
 function AchievementView({ achievements }: AchievementViewProps) {
   const [items, setItems] = useState<Achievement[]>([]);
+	const filterRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const achievementsClone = structuredClone(achievements);
@@ -42,8 +43,16 @@ function AchievementView({ achievements }: AchievementViewProps) {
 
   return (
     <div className="achievement-view">
-      <button className="apply" onClick={apply}>Apply Changes</button>
-      <ul>
+			<div className="nav">
+				<input
+					className="filter"
+					type="text"
+					ref={filterRef}
+        	placeholder="Search by name"
+				/>
+				<button className="apply" onClick={apply}>Apply Changes</button>
+			</div>
+			<ul>
         {items.map((item, index) => (
           <li key={index}>
             <label>
