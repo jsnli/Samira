@@ -30,7 +30,6 @@
 	width: 300px;
 	height: 100vh;
 	box-sizing: border-box;
-	padding: 15px;
 	background: #171a21;
 }
 
@@ -40,7 +39,14 @@
 	right: 0;
 	width: 980px;
 	height: 100vh;
-	padding: 15px;
 	box-sizing: border-box;
-	overflow: hidden;
+	overflow: hidden;	
+}
+
+.instructions {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: #545454;
 }
