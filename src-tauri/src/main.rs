@@ -117,7 +117,6 @@ fn cmd_retrieve_user(app_handle: AppHandle) -> User {
 
     match client {
         Some(client) => {
-            println!("Client found");
             steam::retrieve_user(client)
         }
         None => {
@@ -134,7 +133,6 @@ fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
 
     match client {
         Some(client) => {
-            println!("Client found");
             steam::load_achievements(client).unwrap_or(Vec::new())
         }
         None => {
@@ -150,7 +148,6 @@ fn cmd_commit_achievement(app_handle: AppHandle, name: String, unlocked: bool) {
     let client = state.client.lock().unwrap().clone();
     match client {
         Some(client) => {
-            println!("Client found");
             let _ = steam::commit_achievement(client, name, unlocked);
         }
         None => {
@@ -165,7 +162,6 @@ fn cmd_store_stats(app_handle: AppHandle) {
     let client = state.client.lock().unwrap().clone();
     match client {
         Some(client) => {
-            println!("Client found");
             let _ = steam::store_stats(client);
         }
         None => {
@@ -181,7 +177,6 @@ fn cmd_load_statistics(app_handle: AppHandle, appid: u32) -> Vec<Stat> {
 
     match client {
         Some(client) => {
-            println!("Client found");
             steam::load_statistics(client, appid)
         }
         None => {
@@ -197,7 +192,6 @@ fn cmd_commit_statistics(app_handle: AppHandle, name: String, value: i32) {
     let client = state.client.lock().unwrap().clone();
     match client {
         Some(client) => {
-            println!("Client found");
             let _ = steam::commit_statistics(client, name, value);
         }
         None => {
