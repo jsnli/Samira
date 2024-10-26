@@ -28,6 +28,7 @@ async fn main() {
             cmd_commit_achievement,
             cmd_store_stats,
             cmd_load_statistics,
+            cmd_commit_statistics,
             cmd_retrieve_user,
         ])
         .setup(|app| {
@@ -189,3 +190,21 @@ fn cmd_load_statistics(app_handle: AppHandle, appid: u32) -> Vec<Stat> {
         }
     }
 }
+
+#[tauri::command]
+fn cmd_commit_statistics(app_handle: AppHandle, name: String, value: i32) {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+    match client {
+        Some(client) => {
+            println!("Client found");
+            let _ = steam::commit_statistics(client, name, value);
+        }
+        None => {
+            println!("No Client Found");
+        }
+    }
+}
+
+
+

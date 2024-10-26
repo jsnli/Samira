@@ -32,7 +32,7 @@ impl Default for User {
     fn default() -> Self {
         User {
             user_name: "No user found.".to_string(),
-            user_steam_id: 0
+            user_steam_id: 0,
         }
     }
 }
@@ -129,12 +129,30 @@ pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked:
     } else {
         let _ = achievement.clear();
     }
-    let _ = user_stats.store_stats();
 }
 
 pub fn store_stats(client: Client<ClientManager>) {
     let user_stats = client.user_stats();
     let _ = user_stats.store_stats();
+}
+
+pub fn load_schema(appid: u32) -> std::io::Result<String> {
+    let name = env::var("USER").unwrap_or("root".to_string());
+    let path = format!(
+        "/home/{}/.steam/steam/appcache/stats/UserGameStatsSchema_{}.bin",
+        name, appid
+    );
+
+    let mut file = File::open(&path)?;
+    let mut buffer = Vec::new();
+    file.read_to_end(&mut buffer)?;
+    let content = String::from_utf8_lossy(&buffer);
+    let cleaned: String = content
+        .chars()
+        .filter(|&c| c.is_ascii_graphic() || c.is_ascii_whitespace())
+        .collect();
+
+    Ok(cleaned)
 }
 
 pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
@@ -168,21 +186,9 @@ pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
     stats
 }
 
-pub fn load_schema(appid: u32) -> std::io::Result<String> {
-    let name = env::var("USER").unwrap_or("root".to_string());
-    let path = format!(
-        "/home/{}/.steam/steam/appcache/stats/UserGameStatsSchema_{}.bin",
-        name, appid
-    );
-
-    let mut file = File::open(&path)?;
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
-    let content = String::from_utf8_lossy(&buffer);
-    let cleaned: String = content
-        .chars()
-        .filter(|&c| c.is_ascii_graphic() || c.is_ascii_whitespace())
-        .collect();
-
-    Ok(cleaned)
+pub fn commit_statistics(client: Client<ClientManager>, name: String, value: i32) {
+    let user_stats = client.user_stats(); 
+    let _ = user_stats.set_stat_i32(&name, value);
 }
+
+
