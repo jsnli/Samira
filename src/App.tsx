@@ -65,7 +65,6 @@ function App() {
 
 	function LoadStatistics(newID: number) {
 		invoke("cmd_load_statistics", { appid: newID }).then((response) => {
-			console.log(response);
 			const data = response as Stat[];
 			setStats(data);
 		});
@@ -73,7 +72,6 @@ function App() {
 
 	function UpdateStatusInfo(appid: number, appname: string) {
 		invoke("cmd_retrieve_user").then((response) => {
-			console.log(response);
 			interface User {
 				user_steam_id: number;
 				user_name: string;

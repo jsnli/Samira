@@ -57,7 +57,6 @@ pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
 
         // to-do: handle this more gracefully
         for _ in 0..50 {
-            println!("calling");
             client.run_callbacks();
             ::std::thread::sleep(::std::time::Duration::from_millis(100));
 
@@ -86,7 +85,6 @@ pub fn retrieve_user(client: Client<ClientManager>) -> User {
 pub fn load_achievements(client: Client<ClientManager>) -> Result<Vec<Achievement>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let id: String = client.user().steam_id().raw().to_string();
-        println!("get info. id: {}", id);
 
         let user_stats = client.user_stats();
 
@@ -109,7 +107,6 @@ pub fn load_achievements(client: Client<ClientManager>) -> Result<Vec<Achievemen
                 status: achievement_helper.get().unwrap(),
             };
             AchievementList.push(a);
-            println!("{}", name);
         }
 
         AchievementList
