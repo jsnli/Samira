@@ -14,6 +14,9 @@ function StatisticView({ stats }: StatisticViewProps) {
 		setItems(statsClone);
 	}, [stats]);
 
+	function apply() {
+		console.log("apply stats");
+	}
 
 	return (
 		<div className="statistic-view">
@@ -25,6 +28,7 @@ function StatisticView({ stats }: StatisticViewProps) {
 					</li>
 				))}
 			</ul>
+			<button className="apply" onClick={apply}>Apply</button>
 		</div>
 	)
 
