@@ -5,28 +5,37 @@
 }
 
 .statistic-view ul {
-	height: 100%;
+	height: calc(100% - 50px);
 	list-style: none;
 	overflow-y: scroll;
+	padding: 25px;
+	margin: 0;
+	box-sizing: border-box;
+	display: block;
+	position: relative;
 }
 
 .statistic-view ul li {
 	margin: 0 0 10px 0;
+	padding: 5px;
+	display: flex;
+	flex-direction: row;
 }
 
 .statistic-view label {
 	display: inline-block;
-	width: 250px;
+	width: 50%;
 	height: 25px;
 	line-height: 25px;
 	vertical-align: middle;
-	margin-right: 50px;
+	padding-right: 25px;
+	text-overflow: ellipsis;
 	overflow: hidden;
 }
 
 .statistic-view input {
 	display: inline-block;
-	width: 200px;
+	width: 50%;
 	height: 25px;
 	padding: 0 5px;
 	color: #f6f6f6;
@@ -39,4 +48,14 @@
 
 .statistic-view input:focus {
 	outline: none;
+}
+
+.statistic-view .apply {
+	background: #2a475e;
+	color: #f6f6f6;
+	border: none;
+	width: 200px;
+	height: 50px;
+	display: block;
+	position: relative;
 }
