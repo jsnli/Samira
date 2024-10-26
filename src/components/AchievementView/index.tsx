@@ -23,8 +23,6 @@ function AchievementView({ achievements }: AchievementViewProps) {
   }
 
   function apply() {
-    console.log(items);
-
     for (let i = 0; i < items.length; i++) {
       if (items[i].status != achievements[i].status) {
         invoke("cmd_commit_achievement", {
