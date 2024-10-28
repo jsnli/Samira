@@ -43,8 +43,9 @@ function StatisticView({ stats }: StatisticViewProps) {
       <ul>
         {items.map((item, index) => (
           <li key={index}>
-            <label>{item.api_name}</label>
-            <input defaultValue={item.value} />
+            <label>{item.name}</label>
+            <input type="number" min={item.min} max={item.max} defaultValue={item.value} />
+						<span>Range: {item.min} - {item.max}</span>
           </li>
         ))}
       </ul>
