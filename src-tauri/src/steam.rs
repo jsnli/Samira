@@ -19,6 +19,9 @@ pub struct Achievement {
 #[derive(Serialize, Deserialize)]
 pub struct Stat {
     pub api_name: String,
+    pub name: String,
+    pub min: i32,
+    pub max: i32,
     pub value: i32,
 }
 
@@ -155,24 +158,40 @@ pub fn load_schema(appid: u32) -> std::io::Result<String> {
 pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
     let user_stats = client.user_stats();
 
-    let re = Regex::new(r"type1name(.*?)display").unwrap();
+    let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min|max)(.*?)(?:min|max)(.*?)Default").unwrap();
 
     let mut stats: Vec<Stat> = Vec::new();
 
     match load_schema(appid) {
         Ok(data) => {
-            let captures: Vec<String> = re
+            let captures: Vec<(String, String, String, String)> = re
                 .captures_iter(&data)
-                .map(|caps| caps[1].to_string())
+                .map(|caps| {
+                    let first = caps[1].to_string();
+                    let second = caps[2].to_string();
+                    let third = caps[3].to_string();
+                    let fourth = caps[4].to_string();
+                    (first, second, third, fourth)
+                })
                 .collect();
             for capture in captures {
-                let capture_value: i32 = user_stats.get_stat_i32(&capture).unwrap_or(0);
+                let fetched_value: i32 = user_stats.get_stat_i32(&capture.0).unwrap_or(0);
+                let mut min_val: i32 = capture.2.parse().expect("Not a valid minimum number");
+                let mut max_val: i32 = capture.3.parse().expect("Not a valid maximum number");
+
+                if min_val > max_val {
+                    let temp = min_val;
+                    min_val = max_val;
+                    max_val = temp;
+                }
 
                 let stat: Stat = Stat {
-                    api_name: capture,
-                    value: capture_value,
+                    api_name: capture.0,
+                    name: capture.1,
+                    min: min_val,
+                    max: max_val,
+                    value: fetched_value,
                 };
-
                 stats.push(stat);
             }
         }

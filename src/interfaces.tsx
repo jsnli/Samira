@@ -6,7 +6,10 @@ export interface Achievement {
 }
 
 export interface Stat {
+	name: string,
 	api_name: string;
+	min: number,
+	max: number,
 	value: number;
 }
 
