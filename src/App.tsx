@@ -66,6 +66,7 @@ function App() {
 	function LoadStatistics(newID: number) {
 		invoke("cmd_load_statistics", { appid: newID }).then((response) => {
 			const data = response as Stat[];
+			console.log("new stats test - ", data);
 			setStats(data);
 		});
 	}

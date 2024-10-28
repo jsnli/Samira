@@ -23,8 +23,7 @@
 }
 
 .statistic-view label {
-	display: inline-block;
-	width: 50%;
+	width: 30%;
 	height: 25px;
 	line-height: 25px;
 	vertical-align: middle;
@@ -34,8 +33,7 @@
 }
 
 .statistic-view input {
-	display: inline-block;
-	width: 50%;
+	width: 30%;
 	height: 25px;
 	padding: 0 5px;
 	color: #f6f6f6;
