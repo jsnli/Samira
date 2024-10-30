@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { ChangeEvent, useState, useEffect, useRef } from "react";
 import "./index.css";
 import { invoke } from "@tauri-apps/api/tauri";
 import { Achievement } from "../../interfaces";
@@ -10,12 +10,48 @@ interface AchievementViewProps {
 
 function AchievementView({ achievements, refresh }: AchievementViewProps) {
 	const [items, setItems] = useState<Achievement[]>([]);
+	const [filter, setFilter] = useState("");
 	const filterRef = useRef<HTMLInputElement>(null);
 
 	useEffect(() => {
 		const achievementsClone = structuredClone(achievements);
 		setItems(achievementsClone);
 	}, [achievements]);
+
+	useEffect(() => {
+		let debounce = setTimeout(() => {
+			filterItems(filter);	
+		}, 1000);
+
+		return () => {
+			clearTimeout(debounce);
+		};
+	}, [filter]);
+
+	function handleFilterInput(event: ChangeEvent<HTMLInputElement>) {
+		setFilter(event.target.value);
+	}
+
+	function filterItems(search: string) {
+		if (search.length < 1) {
+			refresh()
+			return
+		}
+		
+		const filteredItems = achievements.filter(function(item) {
+			if (item.name.toLowerCase().includes(search)) {
+				return true
+			}
+
+			if (item.desc.toLowerCase().includes(search)) {
+				return true
+			}
+
+			return false;
+		});
+
+		setItems(filteredItems);
+	}
 
 	function handleCheckbox(index: number) {
 		const newItems = [...items];
@@ -56,7 +92,8 @@ function AchievementView({ achievements, refresh }: AchievementViewProps) {
 					className="filter"
 					type="text"
 					ref={filterRef}
-					placeholder="Search by name"
+					placeholder="Filter by name or description"
+					onChange={handleFilterInput}
 				/>
 				<button onClick={refresh}>Refresh</button>
 				<button className="apply" onClick={apply}>
