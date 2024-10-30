@@ -96,7 +96,7 @@ function App() {
 			</div>
 			<div className="main">
 				{ info.app_id == 0 ? <div className="instructions">Search for a game and select to get started</div> : null}
-				{ view == "a" && info.app_id != 0 ? <AchievementView achievements={achievements} /> : null }
+				{ view == "a" && info.app_id != 0 ? <AchievementView achievements={achievements} refresh={LoadAchievements} /> : null }
 				{ view == "s" && info.app_id != 0 ? <StatisticView stats={stats}/> : null }
 			</div>
 		</>
