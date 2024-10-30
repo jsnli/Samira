@@ -87,8 +87,6 @@ pub fn retrieve_user(client: Client<ClientManager>) -> User {
 
 pub fn load_achievements(client: Client<ClientManager>) -> Result<Vec<Achievement>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
-        let id: String = client.user().steam_id().raw().to_string();
-
         let user_stats = client.user_stats();
 
         let mut AchievementList: Vec<Achievement> = Vec::new();
