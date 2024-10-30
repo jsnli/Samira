@@ -19,7 +19,12 @@
 	background: none;
 	border: none;
 	border-bottom: 1px solid #545454;
+	color: #f6f6f6;
 	flex-grow: 1;
+}
+
+.achievement-view .nav .filter:focus {
+	outline: none;
 }
 
 .achievement-view .nav button {
