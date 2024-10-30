@@ -37,13 +37,13 @@ function AchievementView({ achievements, refresh }: AchievementViewProps) {
 			refresh()
 			return
 		}
-		
+			
 		const filteredItems = achievements.filter(function(item) {
-			if (item.name.toLowerCase().includes(search)) {
+			if (item.name.toLowerCase().includes(search.toLowerCase())) {
 				return true
 			}
 
-			if (item.desc.toLowerCase().includes(search)) {
+			if (item.desc.toLowerCase().includes(search.toLowerCase())) {
 				return true
 			}
 
