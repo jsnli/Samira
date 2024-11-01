@@ -23,19 +23,18 @@ function StatisticView({ stats }: StatisticViewProps) {
       parseFloat(input.value),
     );
 
-		for (let i = 0; i < items.length; i++) {
-			invoke("cmd_commit_statistics", {
-				name: items[i].api_name,
-				value: values[i]
-			}).then(() => {
-				console.log(`committing stats - ${items[i].api_name}`);
-			})
-		}	
+    for (let i = 0; i < items.length; i++) {
+      invoke("cmd_commit_statistics", {
+        name: items[i].api_name,
+        value: values[i],
+      }).then(() => {
+        console.log(`committing stats - ${items[i].api_name}`);
+      });
+    }
 
-		invoke("cmd_store_stats").then(() => {
-			console.log('Stored');
-		})
-
+    invoke("cmd_store_stats").then(() => {
+      console.log("Stored");
+    });
   }
 
   return (
@@ -44,14 +43,24 @@ function StatisticView({ stats }: StatisticViewProps) {
         {items.map((item, index) => (
           <li key={index}>
             <label>{item.name}</label>
-            <input type="number" min={item.min} max={item.max} defaultValue={item.value} />
-						<span>Range: {item.min} - {item.max}</span>
+            <input
+              type="number"
+              min={item.min}
+              max={item.max}
+              defaultValue={item.value}
+            />
+            <span>
+              {item.min} - {item.max}
+            </span>
           </li>
         ))}
       </ul>
-      <button className="apply" onClick={apply}>
-        Apply
-      </button>
+      <div className="nav">
+        <button className="apply" onClick={apply}>
+          Apply
+        </button>
+        <button>Refresh</button>
+      </div>
     </div>
   );
 }
