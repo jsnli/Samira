@@ -5,14 +5,21 @@
 }
 
 .statistic-view ul {
-	height: calc(100% - 50px);
+	height: auto;
+	max-height: 80%;
+	overflow: scroll;
+	width: 75%;
 	list-style: none;
 	overflow-y: scroll;
 	padding: 25px;
 	margin: 0;
 	box-sizing: border-box;
 	display: block;
-	position: relative;
+	background: #171a21;
+	position: absolute;
+	top: 33%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 }
 
 .statistic-view ul li {
@@ -20,6 +27,8 @@
 	padding: 5px;
 	display: flex;
 	flex-direction: row;
+	height: 25px;
+	width: 100%;
 }
 
 .statistic-view label {
@@ -34,26 +43,55 @@
 
 .statistic-view input {
 	width: 30%;
-	height: 25px;
+	height: 100%;
 	padding: 0 5px;
 	color: #f6f6f6;
 	background-color: transparent;
 	border: none;
-	border-bottom: 1px solid #f6f6f6;
+	border-bottom: 1px solid #545454;
 	box-sizing: border-box;
 	box-shadow: none;
+}
+
+.statistic-view input[type="number"]::-webkit-inner-spin-button,
+.statistic-view input[type="number"]::-webkit-outer-spin-button {
+	appearance: none;
+	margin: 0;
 }
 
 .statistic-view input:focus {
 	outline: none;
 }
 
-.statistic-view .apply {
+.statistic-view span {
+	margin-left: 25px;
+	line-height: 25px;
+	color: #545454;
+}
+
+.statistic-view .nav {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 80px;
+	width: 100%;
+	padding: 15px;
+	box-sizing: border-box;
+}
+
+.statistic-view .nav button {
 	background: #2a475e;
 	color: #f6f6f6;
 	border: none;
 	width: 200px;
 	height: 50px;
-	display: block;
+	float: right;
 	position: relative;
+	margin-left: 15px;
 }
+
+.statistic-view .nav button:active {
+	background: #1b2838;
+}
+
+

@@ -26,8 +26,7 @@ function Status({ message, info }: StatusProps) {
 				<label>SteamID:</label>
 				<span>{info.user_id !== 0 ? info.user_id : null}</span>
 			</div>
-			<span className="header">Status:</span>
-			<p>{message}</p>
+			<span className="message">{message}</span>
 		</div>
 	);
 }
