@@ -5,10 +5,11 @@ import { Achievement } from "../../interfaces";
 
 interface AchievementViewProps {
 	achievements: Achievement[];
+	setAlert: (message: string[]) => void;
 	refresh: () => void;
 }
 
-function AchievementView({ achievements, refresh }: AchievementViewProps) {
+function AchievementView({ achievements, setAlert, refresh }: AchievementViewProps) {
 	const [items, setItems] = useState<Achievement[]>([]);
 	const [filter, setFilter] = useState("");
 	const filterRef = useRef<HTMLInputElement>(null);
@@ -60,19 +61,22 @@ function AchievementView({ achievements, refresh }: AchievementViewProps) {
 	}
 
 	function apply() {
+		const alerts: string[] = [];
+
 		for (let i = 0; i < items.length; i++) {
 			if (items[i].status != achievements[i].status) {
 				invoke("cmd_commit_achievement", {
 					name: items[i].api_name,
 					unlocked: items[i].status,
 				}).then(() => {
-					console.log(`${items[i].name} commited as - ${items[i].status}`);
+					alerts.push(`${items[i].name} ${items[i].status ? 'unlocked' : 'locked'}`)
+					refresh()
 				});
 			}
 		}
 
 		invoke("cmd_store_stats").then(() => {
-			console.log("Stored");
+			setAlert(alerts);
 		});
 	}
 
