@@ -16,7 +16,7 @@ function App() {
   const [stats, setStats] = useState<Stat[]>([]);
   const [statusMessage, setStatusMessage] =
     useState<string>("Loading database.");
-  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [alertMessage, setAlertMessage] = useState<string[]>([]);
   const [info, setInfo] = useState<Info>({
     app_id: 0,
     app_name: "",
