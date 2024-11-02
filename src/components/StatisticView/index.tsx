@@ -5,9 +5,12 @@ import { invoke } from "@tauri-apps/api/tauri";
 
 interface StatisticViewProps {
   stats: Stat[];
+	setAlert: (message: string[]) => void;
+	refresh: () => void;
+
 }
 
-function StatisticView({ stats }: StatisticViewProps) {
+function StatisticView({ stats, setAlert, refresh }: StatisticViewProps) {
   const [items, setItems] = useState<Stat[]>([]);
 
   useEffect(() => {
@@ -16,7 +19,9 @@ function StatisticView({ stats }: StatisticViewProps) {
   }, [stats]);
 
   function apply() {
-    const inputs: HTMLInputElement[] = Array.from(
+   	const alerts: string[] = []; 
+
+		const inputs: HTMLInputElement[] = Array.from(
       document.querySelectorAll(".statistic-view ul li input"),
     );
     const values: number[] = inputs.map((input: HTMLInputElement) =>
@@ -24,18 +29,31 @@ function StatisticView({ stats }: StatisticViewProps) {
     );
 
     for (let i = 0; i < items.length; i++) {
+			if (items[i].value == values[i]) {
+				continue;
+			}
       invoke("cmd_commit_statistics", {
         name: items[i].api_name,
         value: values[i],
       }).then(() => {
+				alerts.push(`${items[i].name} set to ${values[i]} `)
         console.log(`committing stats - ${items[i].api_name}`);
       });
     }
 
     invoke("cmd_store_stats").then(() => {
-      console.log("Stored");
-    });
+			setAlert(alerts);
+			refresh();
+		});
   }
+
+	function resetDefaultValues() {
+		refresh();
+		const inputs = document.querySelectorAll<HTMLInputElement>(".statistic-view ul li input");
+		for (let i = 0; i < inputs.length; i++) {
+			inputs[i].value = items[i].value.toString();
+		}	
+	}
 
   return (
     <div className="statistic-view">
@@ -59,7 +77,7 @@ function StatisticView({ stats }: StatisticViewProps) {
         <button className="apply" onClick={apply}>
           Apply
         </button>
-        <button>Refresh</button>
+        <button onClick={resetDefaultValues}>Refresh</button>
       </div>
     </div>
   );
