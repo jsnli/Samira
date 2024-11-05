@@ -23,6 +23,7 @@ function App() {
     user_id: 0,
     user_name: "",
   });
+	const [databaseReady, setDatabaseReady] = useState<boolean>(false);
 
   const [view, setView] = useState<"a" | "s">("a");
 
@@ -30,6 +31,7 @@ function App() {
     invoke("cmd_request_data").then((response) => {
       invoke("cmd_populate_data", { apps: response }).then(() => {
         setStatusMessage("Database ready.");
+				setDatabaseReady(true);
       });
     });
   }, []);
@@ -92,7 +94,7 @@ function App() {
   return (
     <>
       <div className="sidebar">
-        <Search onDropdownClick={handleDropdownClick} />
+        <Search onDropdownClick={handleDropdownClick} databaseReady={databaseReady}/>
         <Tabs handleSelectView={selectView} />
         <Status message={statusMessage} info={info} />
         <Alert message={alertMessage} />
