@@ -60,7 +60,7 @@
 
 .achievement-view ul {
 	width: 100%;
-	height: calc(100% - 50px);
+	height: calc(100% - 105px);
 	list-style: none;
 	overflow-y: scroll;
 	margin: 0;
