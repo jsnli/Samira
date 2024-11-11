@@ -37,6 +37,7 @@
 
 .search-dropdown {
 	width: 100%;
+	max-height: calc(100vh - 80px);
 	background: #1b2838;
 	list-style-type: none;
 	padding: 0px;
@@ -44,7 +45,7 @@
 	position: absolute;
 	left: 0;
 	top: 50px;
-	overflow-y: auto;
+	overflow-y: scroll;
 }
 
 .search-item {
