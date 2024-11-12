@@ -4,6 +4,13 @@
 	overflow: hidden;
 }
 
+.statistic-view .no-statistics {
+	position: absolute;
+	top: 33%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
 .statistic-view ul {
 	height: auto;
 	max-height: 80%;
