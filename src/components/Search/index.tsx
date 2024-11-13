@@ -55,7 +55,6 @@ function Search({ onAppSelection, setStatus, databaseReady }: SearchProps) {
 
   function handleAppIDLaunch(id: number) {
     invoke("cmd_query_id", { appid: Number(query) }).then((response) => {
-      console.log(response as App);
       const app = response as App;
       if (app.appid > 0) {
         onAppSelection(app.appid, app.name);
