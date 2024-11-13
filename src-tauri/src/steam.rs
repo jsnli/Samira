@@ -157,44 +157,66 @@ pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
     let user_stats = client.user_stats();
 
     // let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min|max)(.*?)(?:min|max)(.*?)Default").unwrap();
- 
-    let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
+
+    // let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
+    let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:maxchange(\d+))?(?:incrementonly(\d+))?(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
 
     let mut stats: Vec<Stat> = Vec::new();
 
     match load_schema(appid) {
         Ok(data) => {
-            let captures: Vec<(String, String, String, String)> = re
+            stats = re
                 .captures_iter(&data)
                 .map(|caps| {
-                    let first = caps[1].to_string();
-                    let second = caps[2].to_string();
-                    let third = caps[3].to_string();
-                    let fourth = caps[4].to_string();
-                    (first, second, third, fourth)
+                    let api_name = caps
+                        .get(1)
+                        .map_or(String::new(), |f| f.as_str().to_string());
+
+                    let name = caps
+                        .get(2)
+                        .map_or(String::new(), |f| f.as_str().to_string());
+                    let value = user_stats.get_stat_i32(&api_name).unwrap_or(0);
+
+                    println!("{}", value);
+                    let min_val_one = caps
+                        .get(5)
+                        .map_or(String::new(), |f| f.as_str().to_string());
+                    let min_val_two = caps
+                        .get(7)
+                        .map_or(String::new(), |f| f.as_str().to_string());
+                    let max_val_one = caps
+                        .get(6)
+                        .map_or(String::new(), |f| f.as_str().to_string());
+                    let max_val_two = caps
+                        .get(8)
+                        .map_or(String::new(), |f| f.as_str().to_string());
+
+                    let mut min = if min_val_one.len() > min_val_two.len() {
+                        &min_val_one
+                    } else {
+                        &min_val_two
+                    };
+                    let mut max = if max_val_one.len() > max_val_two.len() {
+                        &max_val_one
+                    } else {
+                        &max_val_two
+                    };
+
+                    if min > max {
+                        let temp = min;
+                        min = max;
+                        max = temp;
+                    }
+
+                    Stat {
+                        api_name,
+                        name,
+                        min: min.parse::<i32>().unwrap_or(0),
+                        max: max.parse::<i32>().unwrap_or(0),
+                        value,
+                    }
                 })
                 .collect();
-            for capture in captures {
-                println!("({}, {}, {}, {})", capture.0, capture.1,capture.2,capture.3);
-                let fetched_value: i32 = user_stats.get_stat_i32(&capture.0).unwrap_or(0);
-                let mut min_val: i32 = capture.2.parse().expect("Not a valid minimum number");
-                let mut max_val: i32 = capture.3.parse().expect("Not a valid maximum number");
-
-                if min_val > max_val {
-                    let temp = min_val;
-                    min_val = max_val;
-                    max_val = temp;
-                }
-
-                let stat: Stat = Stat {
-                    api_name: capture.0,
-                    name: capture.1,
-                    min: min_val,
-                    max: max_val,
-                    value: fetched_value,
-                };
-                stats.push(stat);
-            }
         }
         Err(e) => {
             println!("{}", e);
@@ -204,8 +226,6 @@ pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
 }
 
 pub fn commit_statistics(client: Client<ClientManager>, name: String, value: i32) {
-    let user_stats = client.user_stats(); 
+    let user_stats = client.user_stats();
     let _ = user_stats.set_stat_i32(&name, value);
 }
-
-
