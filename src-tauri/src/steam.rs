@@ -156,9 +156,6 @@ pub fn load_schema(appid: u32) -> std::io::Result<String> {
 pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
     let user_stats = client.user_stats();
 
-    // let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min|max)(.*?)(?:min|max)(.*?)Default").unwrap();
-
-    // let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
     let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:maxchange(\d+))?(?:incrementonly(\d+))?(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
 
     let mut stats: Vec<Stat> = Vec::new();
