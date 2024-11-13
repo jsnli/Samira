@@ -12,6 +12,7 @@
 	border: 1px solid #f6f6f6;
 	box-sizing: border-box;
 	padding: 5px;
+	cursor: pointer;
 }
 
 .tabs button.active {
