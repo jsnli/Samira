@@ -4,16 +4,17 @@ import "./index.css";
 import { App } from "../../interfaces";
 
 interface SearchProps {
-  onDropdownClick: (newID: number, newName: string) => void;
-	databaseReady: boolean;
+  onAppSelection: (newID: number, newName: string) => void;
+  setStatus: (message: string) => void;
+  databaseReady: boolean;
 }
 
-function Search({ onDropdownClick, databaseReady }: SearchProps) {
+function Search({ onAppSelection, setStatus, databaseReady }: SearchProps) {
   const [query, setQuery] = useState("");
   const [applist, setApplist] = useState<App[]>([]);
   const [active, setActive] = useState<boolean>(false);
 
-	const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let debounce = setTimeout(() => {
@@ -24,8 +25,8 @@ function Search({ onDropdownClick, databaseReady }: SearchProps) {
       clearTimeout(debounce);
     };
   }, [query]);
-  
-	function handleFocus() {
+
+  function handleFocus() {
     setActive(true);
   }
 
@@ -34,7 +35,7 @@ function Search({ onDropdownClick, databaseReady }: SearchProps) {
   }
 
   function search(value: string) {
-		if (!value.length) return;
+    if (!value.length) return;
     invoke("cmd_query_name", { name: value }).then((response) => {
       setApplist(response as App[]);
     });
@@ -44,13 +45,25 @@ function Search({ onDropdownClick, databaseReady }: SearchProps) {
     setQuery(event.target.value);
   }
 
-	function handleItemClick(app: App) {
-		if (inputRef.current) {
-			inputRef.current.value = app.name;
-		}	
-		onDropdownClick(app.appid, app.name);
-		setActive(false);
-	}
+  function handleItemClick(app: App) {
+    if (inputRef.current) {
+      inputRef.current.value = app.name;
+    }
+    onAppSelection(app.appid, app.name);
+    setActive(false);
+  }
+
+  function handleAppIDLaunch(id: number) {
+    invoke("cmd_query_id", { appid: Number(query) }).then((response) => {
+      console.log(response as App);
+      const app = response as App;
+      if (app.appid > 0) {
+        onAppSelection(app.appid, app.name);
+      } else {
+        setStatus(`No game found for App ID: ${id}`);
+      }
+    });
+  }
 
   return (
     <div
@@ -61,15 +74,23 @@ function Search({ onDropdownClick, databaseReady }: SearchProps) {
     >
       <input
         type="text"
-				ref={inputRef}
+        ref={inputRef}
         placeholder="Search by name"
         className="search-input"
         onChange={handleChange}
-				disabled={!databaseReady}
+        disabled={!databaseReady}
       />
       <ul
         className={`search-dropdown ${active ? "search-active" : "search-hidden"}`}
       >
+        {!isNaN(Number(query)) ? (
+          <li
+            className="search-item"
+            onClick={() => handleAppIDLaunch(Number(query))}
+          >
+            Launch AppId - {query}
+          </li>
+        ) : null}
         {applist.map((app, index) => (
           <li
             className="search-item"
