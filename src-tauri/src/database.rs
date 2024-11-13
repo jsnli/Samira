@@ -1,4 +1,4 @@
-use rusqlite::Connection;
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
@@ -72,11 +72,11 @@ pub fn query_id(db: &mut Connection, appid: i32) -> Result<App, rusqlite::Error>
 
 pub fn query_name(db: &mut Connection, name: String) -> Result<Vec<App>, rusqlite::Error> {
     let mut stmt = db.prepare("
-        SELECT * FROM apps WHERE name LIKE ?"
+        SELECT * FROM apps WHERE name LIKE ? or appid LIKE ?"
     )?;
 
     let search_pattern = format!("%{}%", name);
-    let rows = stmt.query_map([search_pattern], |row| {
+    let rows = stmt.query_map(params![search_pattern, search_pattern], |row| {
         Ok(App {
             appid: row.get(0)?,
             name: row.get(1)?,
