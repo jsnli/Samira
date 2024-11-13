@@ -57,7 +57,7 @@ function Search({ onAppSelection, setStatus, databaseReady }: SearchProps) {
     invoke("cmd_query_id", { appid: Number(query) }).then((response) => {
       const app = response as App;
       if (app.appid > 0) {
-        onAppSelection(app.appid, app.name);
+				handleItemClick(app);
       } else {
         setStatus(`No game found for App ID: ${id}`);
       }
