@@ -23,7 +23,7 @@ function App() {
     user_id: 0,
     user_name: "",
   });
-	const [databaseReady, setDatabaseReady] = useState<boolean>(false);
+  const [databaseReady, setDatabaseReady] = useState<boolean>(false);
 
   const [view, setView] = useState<"a" | "s">("a");
 
@@ -31,7 +31,7 @@ function App() {
     invoke("cmd_request_data").then((response) => {
       invoke("cmd_populate_data", { apps: response }).then(() => {
         setStatusMessage("Database ready.");
-				setDatabaseReady(true);
+        setDatabaseReady(true);
       });
     });
   }, []);
@@ -42,7 +42,7 @@ function App() {
     }
   }
 
-  function handleDropdownClick(newID: number, newName: string) {
+  function handleAppSelection(newID: number, newName: string) {
     if (newID > 0) {
       invoke("cmd_start_client", { appid: newID }).then((response) => {
         if (response) {
@@ -94,7 +94,11 @@ function App() {
   return (
     <>
       <div className="sidebar">
-        <Search onDropdownClick={handleDropdownClick} databaseReady={databaseReady}/>
+        <Search
+          onAppSelection={handleAppSelection}
+          databaseReady={databaseReady}
+          setStatus={(message: string) => setStatusMessage(message)}
+        />
         <Tabs handleSelectView={selectView} />
         <Status message={statusMessage} info={info} />
         <Alert message={alertMessage} />
@@ -113,10 +117,11 @@ function App() {
           />
         ) : null}
         {view == "s" && info.app_id != 0 ? (
-          <StatisticView stats={stats}
-						setAlert={(message: string[]) => setAlertMessage(message)}
-						refresh={() => LoadStatistics(info.app_id)}
-					/>
+          <StatisticView
+            stats={stats}
+            setAlert={(message: string[]) => setAlertMessage(message)}
+            refresh={() => LoadStatistics(info.app_id)}
+          />
         ) : null}
       </div>
     </>

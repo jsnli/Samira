@@ -14,9 +14,9 @@
 	color: #f6f6f6;
 	background-color: transparent;
 	border: none;
-	border-bottom: 1px solid #f6f6f6; 
+	border-bottom: 1px solid #f6f6f6;
 	box-sizing: border-box;
-	box-shadow: none;	
+	box-shadow: none;
 }
 
 .search-input:focus {
@@ -49,6 +49,7 @@
 }
 
 .search-item {
+	cursor: pointer;
 	padding: 15px;
 }
 
