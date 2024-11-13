@@ -33,6 +33,7 @@
 	border: none;
 	width: 150px;
 	margin: 0 5px;
+	cursor: pointer;
 }
 
 .achievement-view .nav button:active {
@@ -56,6 +57,7 @@
 	border: 1px solid #f6f6f6;
 	margin: 0 5px 0 0;
 	font-size: 12px;
+	cursor: pointer;
 }
 
 .achievement-view ul {

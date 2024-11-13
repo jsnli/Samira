@@ -95,6 +95,7 @@
 	float: right;
 	position: relative;
 	margin-left: 15px;
+	cursor: pointer;
 }
 
 .statistic-view .nav button:active {

@@ -82,7 +82,7 @@ function Search({ onAppSelection, setStatus, databaseReady }: SearchProps) {
       <ul
         className={`search-dropdown ${active ? "search-active" : "search-hidden"}`}
       >
-        {!isNaN(Number(query)) ? (
+        {!isNaN(Number(query)) && query.length > 0 ? (
           <li
             className="search-item"
             onClick={() => handleAppIDLaunch(Number(query))}
