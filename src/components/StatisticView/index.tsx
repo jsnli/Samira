@@ -62,7 +62,7 @@ function StatisticView({ stats, setAlert, refresh }: StatisticViewProps) {
 				<ul>
 					{items.map((item, index) => (
 						<li key={index}>
-							<label>{item.name}</label>
+							<label>{item.name.length > 0 ? item.name : item.api_name}</label>
 							<input
 								type="number"
 								min={item.min}
