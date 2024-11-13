@@ -156,7 +156,9 @@ pub fn load_schema(appid: u32) -> std::io::Result<String> {
 pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
     let user_stats = client.user_stats();
 
-    let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min|max)(.*?)(?:min|max)(.*?)Default").unwrap();
+    // let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min|max)(.*?)(?:min|max)(.*?)Default").unwrap();
+ 
+    let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
 
     let mut stats: Vec<Stat> = Vec::new();
 
@@ -173,6 +175,7 @@ pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
                 })
                 .collect();
             for capture in captures {
+                println!("({}, {}, {}, {})", capture.0, capture.1,capture.2,capture.3);
                 let fetched_value: i32 = user_stats.get_stat_i32(&capture.0).unwrap_or(0);
                 let mut min_val: i32 = capture.2.parse().expect("Not a valid minimum number");
                 let mut max_val: i32 = capture.3.parse().expect("Not a valid maximum number");
