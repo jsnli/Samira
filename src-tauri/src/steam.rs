@@ -174,7 +174,6 @@ pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
                         .map_or(String::new(), |f| f.as_str().to_string());
                     let value = user_stats.get_stat_i32(&api_name).unwrap_or(0);
 
-                    println!("{}", value);
                     let min_val_one = caps
                         .get(5)
                         .map_or(String::new(), |f| f.as_str().to_string());
