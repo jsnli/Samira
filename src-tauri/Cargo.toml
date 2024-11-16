@@ -1,7 +1,7 @@
 [package]
 name = "samira"
 version = "0.3.0"
-description = "A Tauri App"
+description = "Steam achievement manager for Linux written with Tauri and Rust"
 authors = ["you"]
 edition = "2021"
 
