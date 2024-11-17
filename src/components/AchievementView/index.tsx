@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useEffect, useRef } from "react";
 import "./index.css";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 import { Achievement } from "../../interfaces";
 
 interface AchievementViewProps {

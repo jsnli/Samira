@@ -1,7 +1,7 @@
 use rusqlite::Connection;
 use std::sync::Mutex;
-use tauri::{AppHandle, State, Manager};
 use steamworks::{Client, ClientManager};
+use tauri::{AppHandle, Manager, State};
 
 pub struct AppState {
     pub db: Mutex<Option<Connection>>,
