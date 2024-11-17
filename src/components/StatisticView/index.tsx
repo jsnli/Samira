@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Stat } from "../../interfaces";
 import "./index.css";
-import { invoke } from "@tauri-apps/api/tauri";
+import { invoke } from "@tauri-apps/api/core";
 
 interface StatisticViewProps {
 	stats: Stat[];
