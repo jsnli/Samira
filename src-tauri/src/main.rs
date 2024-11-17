@@ -14,6 +14,7 @@ use tauri::{AppHandle, Manager, State};
 #[tokio::main]
 async fn main() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .manage(AppState {
             db: Default::default(),
             client: Default::default(),
@@ -116,9 +117,7 @@ fn cmd_retrieve_user(app_handle: AppHandle) -> User {
     let client = state.client.lock().unwrap().clone();
 
     match client {
-        Some(client) => {
-            steam::retrieve_user(client)
-        }
+        Some(client) => steam::retrieve_user(client),
         None => {
             println!("No Client Found");
             User::default()
@@ -132,9 +131,7 @@ fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
     let client = state.client.lock().unwrap().clone();
 
     match client {
-        Some(client) => {
-            steam::load_achievements(client).unwrap_or(Vec::new())
-        }
+        Some(client) => steam::load_achievements(client).unwrap_or(Vec::new()),
         None => {
             println!("No Client Found");
             Vec::new()
@@ -176,9 +173,7 @@ fn cmd_load_statistics(app_handle: AppHandle, appid: u32) -> Vec<Stat> {
     let client = state.client.lock().unwrap().clone();
 
     match client {
-        Some(client) => {
-            steam::load_statistics(client, appid)
-        }
+        Some(client) => steam::load_statistics(client, appid),
         None => {
             println!("No Client Found");
             Vec::new()
@@ -199,6 +194,3 @@ fn cmd_commit_statistics(app_handle: AppHandle, name: String, value: i32) {
         }
     }
 }
-
-
-
