@@ -37,8 +37,8 @@
 .main {
 	position: absolute;
 	top: 0;
-	right: 0;
-	width: 980px;
+	left: 300px;
+	width: calc(100vw - 300px);
 	height: 100vh;
 	box-sizing: border-box;
 	overflow: hidden;	
