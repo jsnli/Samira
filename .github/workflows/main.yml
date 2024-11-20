@@ -60,4 +60,4 @@ jobs:
           releaseBody: ''
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }}
+          args: --verbose ${{ matrix.args }}
