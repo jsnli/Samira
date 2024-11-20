@@ -53,7 +53,7 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LD_LIBRARY_PATH: "/home/runner/work/actions-test/actions-test/assets/libsteam_api.so"
+          LD_LIBRARY_PATH: "/home/runner/work/Samira/Samira/assets/libsteam_api.so"
         with:
           tagName: v__VERSION__
           releaseName: 'v__VERSION__'
