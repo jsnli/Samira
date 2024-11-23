@@ -2,7 +2,7 @@ import "./index.css";
 import { Info } from "../../interfaces";
 
 interface StatusProps {
-	message: string;
+	message: string[];
 	info: Info;
 }
 
@@ -26,7 +26,13 @@ function Status({ message, info }: StatusProps) {
 				<label>SteamID:</label>
 				<span>{info.user_id !== 0 ? info.user_id : null}</span>
 			</div>
-			<span className="message">{message}</span>
+			<div className="log">
+				<ul>		
+					{message.map((element, index) => (
+						<li key={index}>{element}</li>
+					))}
+				</ul>
+			</div>
 		</div>
 	);
 }

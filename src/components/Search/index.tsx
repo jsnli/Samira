@@ -5,11 +5,11 @@ import { App } from "../../interfaces";
 
 interface SearchProps {
   onAppSelection: (newID: number, newName: string) => void;
-  setStatus: (message: string) => void;
+  updateStatus: (message: string | string[]) => void;
   databaseReady: boolean;
 }
 
-function Search({ onAppSelection, setStatus, databaseReady }: SearchProps) {
+function Search({ onAppSelection, updateStatus, databaseReady }: SearchProps) {
   const [query, setQuery] = useState("");
   const [applist, setApplist] = useState<App[]>([]);
   const [active, setActive] = useState<boolean>(false);
@@ -59,7 +59,7 @@ function Search({ onAppSelection, setStatus, databaseReady }: SearchProps) {
       if (app.appid > 0) {
 				handleItemClick(app);
       } else {
-        setStatus(`No game found for App ID: ${id}`);
+        updateStatus(`No game found for App ID: ${id}`);
       }
     });
   }
