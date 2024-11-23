@@ -5,11 +5,11 @@ import { Achievement } from "../../interfaces";
 
 interface AchievementViewProps {
 	achievements: Achievement[];
-	setAlert: (message: string[]) => void;
+	updateStatus: (message: string | string[]) => void;
 	refresh: () => void;
 }
 
-function AchievementView({ achievements, setAlert, refresh }: AchievementViewProps) {
+function AchievementView({ achievements, updateStatus, refresh }: AchievementViewProps) {
 	const [items, setItems] = useState<Achievement[]>([]);
 	const [filter, setFilter] = useState("");
 	const filterRef = useRef<HTMLInputElement>(null);
@@ -34,12 +34,11 @@ function AchievementView({ achievements, setAlert, refresh }: AchievementViewPro
 	}
 
 	function filterItems(search: string) {
-		if (search.length < 1) {
-			refresh()
-			return
-		}
 			
 		const filteredItems = achievements.filter(function(item) {
+			if (search.length < 1) {
+				return true
+			}
 			if (item.name.toLowerCase().includes(search.toLowerCase())) {
 				return true
 			}
@@ -55,14 +54,14 @@ function AchievementView({ achievements, setAlert, refresh }: AchievementViewPro
 	}
 
 	function handleCheckbox(index: number) {
-		const newItems = [...items];
+		const newItems = structuredClone(items);
 		newItems[index].status = !items[index].status;
 		setItems(newItems);
 	}
 
 	function apply() {
 		const alerts: string[] = [];
-
+		console.log(items, achievements)
 		for (let i = 0; i < items.length; i++) {
 			if (items[i].status != achievements[i].status) {
 				invoke("cmd_commit_achievement", {
@@ -76,7 +75,7 @@ function AchievementView({ achievements, setAlert, refresh }: AchievementViewPro
 		}
 
 		invoke("cmd_store_stats").then(() => {
-			setAlert(alerts);
+			updateStatus(alerts);
 		});
 	}
 

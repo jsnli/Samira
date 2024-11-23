@@ -5,11 +5,11 @@ import { invoke } from "@tauri-apps/api/core";
 
 interface StatisticViewProps {
 	stats: Stat[];
-	setAlert: (message: string[]) => void;
+	updateStatus: (message: string | string[]) => void;
 	refresh: () => void;
 }
 
-function StatisticView({ stats, setAlert, refresh }: StatisticViewProps) {
+function StatisticView({ stats, updateStatus, refresh }: StatisticViewProps) {
 	const [items, setItems] = useState<Stat[]>([]);
 
 	useEffect(() => {
@@ -41,7 +41,7 @@ function StatisticView({ stats, setAlert, refresh }: StatisticViewProps) {
 		}
 
 		invoke("cmd_store_stats").then(() => {
-			setAlert(alerts);
+			updateStatus(alerts);
 			refresh();
 		});
 	}
