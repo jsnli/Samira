@@ -69,7 +69,6 @@ function AchievementView({ achievements, updateStatus, refresh }: AchievementVie
 					unlocked: items[i].status,
 				}).then(() => {
 					alerts.push(`${items[i].name} ${items[i].status ? 'unlocked' : 'locked'}`)
-					refresh()
 				});
 			}
 		}

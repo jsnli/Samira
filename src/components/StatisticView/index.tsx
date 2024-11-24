@@ -42,7 +42,6 @@ function StatisticView({ stats, updateStatus, refresh }: StatisticViewProps) {
 
 		invoke("cmd_store_stats").then(() => {
 			updateStatus(alerts);
-			refresh();
 		});
 	}
 
