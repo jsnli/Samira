@@ -19,7 +19,7 @@ function Search({ onAppSelection, updateStatus, databaseReady }: SearchProps) {
   useEffect(() => {
     let debounce = setTimeout(() => {
       search(query);
-    }, 1000);
+    }, 500);
 
     return () => {
       clearTimeout(debounce);

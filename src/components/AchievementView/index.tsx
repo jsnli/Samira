@@ -26,7 +26,7 @@ function AchievementView({
   useEffect(() => {
     let debounce = setTimeout(() => {
       filterItems(filter);
-    }, 1000);
+    }, 500);
 
     return () => {
       clearTimeout(debounce);
