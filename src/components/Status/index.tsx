@@ -27,6 +27,7 @@ function Status({ message, info }: StatusProps) {
 				<span>{info.user_id !== 0 ? info.user_id : null}</span>
 			</div>
 			<div className="log">
+				<span>Activity:</span>	
 				<ul>		
 					{message.map((element, index) => (
 						<li key={index}>{element}</li>
