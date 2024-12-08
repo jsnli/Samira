@@ -3277,7 +3277,7 @@ checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
 [[package]]
 name = "steamworks"
 version = "0.11.0"
-source = "git+https://github.com/jsnli/steamworks-rs?branch=add-request-user-stats#591cb1df92f60aedb5a11dbe0f70b0a7e549f130"
+source = "git+https://github.com/jsnli/steamworks-rs?branch=samira-steamworks-rs#3deaa11f8950fbe7815cbc0bf0640fdbada2d779"
 dependencies = [
  "bitflags 1.3.2",
  "lazy_static",
@@ -3289,7 +3289,7 @@ dependencies = [
 [[package]]
 name = "steamworks-sys"
 version = "0.11.0"
-source = "git+https://github.com/jsnli/steamworks-rs?branch=add-request-user-stats#591cb1df92f60aedb5a11dbe0f70b0a7e549f130"
+source = "git+https://github.com/jsnli/steamworks-rs?branch=samira-steamworks-rs#3deaa11f8950fbe7815cbc0bf0640fdbada2d779"
 
 [[package]]
 name = "string_cache"
