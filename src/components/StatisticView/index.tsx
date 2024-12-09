@@ -6,10 +6,10 @@ import { invoke } from "@tauri-apps/api/core";
 interface StatisticViewProps {
 	stats: Stat[];
 	updateStatus: (message: string | string[]) => void;
-	refresh: () => void;
+	loadStatistics: () => void;
 }
 
-function StatisticView({ stats, updateStatus, refresh }: StatisticViewProps) {
+function StatisticView({ stats, updateStatus, loadStatistics }: StatisticViewProps) {
 	const [items, setItems] = useState<Stat[]>([]);
 
 	useEffect(() => {
@@ -53,6 +53,10 @@ function StatisticView({ stats, updateStatus, refresh }: StatisticViewProps) {
 		for (let i = 0; i < inputs.length; i++) {
 			inputs[i].value = items[i].value.toString();
 		}
+	}
+
+	function refresh() {
+		loadStatistics();
 	}
 
 	return (

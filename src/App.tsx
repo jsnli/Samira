@@ -131,14 +131,14 @@ function App() {
             achievements={achievements}
             updateStatus={updateStatus}
 						loadAchievementIcons={() => LoadAchievementIcons(info.app_id)}
-            refresh={LoadAchievements}
+            loadAchievements={LoadAchievements}
           />
         ) : null}
         {view == "s" && info.app_id != 0 ? (
           <StatisticView
             stats={stats}
             updateStatus={updateStatus}
-            refresh={() => LoadStatistics(info.app_id)}
+						loadStatistics = {() => LoadStatistics(info.app_id)}
           />
         ) : null}
       </div>

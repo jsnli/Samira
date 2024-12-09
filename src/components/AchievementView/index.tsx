@@ -7,14 +7,14 @@ interface AchievementViewProps {
   achievements: Achievement[];
   updateStatus: (message: string | string[]) => void;
 	loadAchievementIcons: () => void;
-  refresh: () => void;
+  loadAchievements: () => void;
 }
 
 function AchievementView({
   achievements,
   updateStatus,
 	loadAchievementIcons,
-  refresh,
+  loadAchievements,
 }: AchievementViewProps) {
   const [items, setItems] = useState<Achievement[]>([]);
   const [filter, setFilter] = useState("");
@@ -104,6 +104,11 @@ function AchievementView({
 
     setItems(lockedItems);
   }
+	
+	function refresh() {
+		loadAchievements();
+		loadAchievementIcons();
+	}
 
   return (
     <div className="achievement-view">
