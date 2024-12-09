@@ -7,6 +7,7 @@ mod state;
 mod steam;
 
 use database::App;
+use std::collections::HashMap;
 use state::{AppState, ServiceAccess};
 use steam::{Achievement, Stat, User};
 use tauri::{AppHandle, Manager, State};
@@ -26,6 +27,7 @@ async fn main() {
             cmd_query_name,
             cmd_start_client,
             cmd_load_achievements,
+            cmd_load_achievement_icons,
             cmd_commit_achievement,
             cmd_store_stats,
             cmd_load_statistics,
@@ -135,6 +137,22 @@ fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
         None => {
             println!("No Client Found");
             Vec::new()
+        }
+    }
+}
+
+#[tauri::command]
+fn cmd_load_achievement_icons(app_handle: AppHandle) -> HashMap<String, String> {
+    let state: State<AppState> = app_handle.state();
+    let client = state.client.lock().unwrap().clone();
+
+    match client {
+        Some(client) => {
+            steam::load_achievement_icons(client)
+        },
+        None => {
+            println!("No Client Found");
+            HashMap::new()
         }
     }
 }
