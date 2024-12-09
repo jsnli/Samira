@@ -21,6 +21,10 @@ function AchievementView({
   useEffect(() => {
     const achievementsClone = structuredClone(achievements);
     setItems(achievementsClone);
+    invoke("cmd_load_achievement_icons").then((response) => {
+			const data = response as {[key: string] : string};
+			console.log(data["Blue String"]);
+    });
   }, [achievements]);
 
   useEffect(() => {
