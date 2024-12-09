@@ -11,7 +11,7 @@ import { Achievement, Stat, Info } from "./interfaces";
 import "./App.css";
 
 function App() {
-	const isInitialized = useRef(false);
+  const isInitialized = useRef(false);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [stats, setStats] = useState<Stat[]>([]);
   const [status, setStatus] = useState<string[]>([]);
@@ -26,10 +26,10 @@ function App() {
   const [view, setView] = useState<"a" | "s">("a");
 
   useEffect(() => {
-		if (isInitialized.current) {
-			return;
-		}
-		isInitialized.current = true;
+    if (isInitialized.current) {
+      return;
+    }
+    isInitialized.current = true;
     updateStatus("Loading database.");
     invoke("cmd_request_data").then((response) => {
       invoke("cmd_populate_data", { apps: response }).then(() => {
@@ -41,10 +41,10 @@ function App() {
 
   function updateStatus(input: string | string[]) {
     if (typeof input === "string") {
-			setStatus(prevStatus => [input, ...prevStatus])
+      setStatus((prevStatus) => [input, ...prevStatus]);
     } else if (Array.isArray(input)) {
-   		setStatus(prevStatus => [...input, ...prevStatus]) 
-		}
+      setStatus((prevStatus) => [...input, ...prevStatus]);
+    }
   }
 
   function selectView(view: string) {
@@ -78,11 +78,18 @@ function App() {
     });
   }
 
+  function LoadAchievementIcons(newID: number) {
+    invoke("cmd_load_achievement_icons", { appid: newID }).then((response) => {
+      const data = response as { [key: string]: string };
+      console.log(data["Blue String"]);
+    });
+  }
+
   function LoadStatistics(newID: number) {
     invoke("cmd_load_statistics", { appid: newID }).then((response) => {
       const data = response as Stat[];
       setStats(data);
-			updateStatus("Statistics loaded.");
+      updateStatus("Statistics loaded.");
     });
   }
 
@@ -123,6 +130,7 @@ function App() {
           <AchievementView
             achievements={achievements}
             updateStatus={updateStatus}
+						loadAchievementIcons={() => LoadAchievementIcons(info.app_id)}
             refresh={LoadAchievements}
           />
         ) : null}
