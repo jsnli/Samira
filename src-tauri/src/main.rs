@@ -142,13 +142,13 @@ fn cmd_load_achievements(app_handle: AppHandle) -> Vec<Achievement> {
 }
 
 #[tauri::command]
-fn cmd_load_achievement_icons(app_handle: AppHandle) -> HashMap<String, String> {
+fn cmd_load_achievement_icons(app_handle: AppHandle, appid: u32) -> HashMap<String, String> {
     let state: State<AppState> = app_handle.state();
     let client = state.client.lock().unwrap().clone();
 
     match client {
         Some(client) => {
-            steam::load_achievement_icons(client)
+            steam::load_achievement_icons(appid)
         },
         None => {
             println!("No Client Found");

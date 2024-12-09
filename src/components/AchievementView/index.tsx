@@ -6,12 +6,14 @@ import { Achievement } from "../../interfaces";
 interface AchievementViewProps {
   achievements: Achievement[];
   updateStatus: (message: string | string[]) => void;
+	loadAchievementIcons: () => void;
   refresh: () => void;
 }
 
 function AchievementView({
   achievements,
   updateStatus,
+	loadAchievementIcons,
   refresh,
 }: AchievementViewProps) {
   const [items, setItems] = useState<Achievement[]>([]);
@@ -21,10 +23,7 @@ function AchievementView({
   useEffect(() => {
     const achievementsClone = structuredClone(achievements);
     setItems(achievementsClone);
-    invoke("cmd_load_achievement_icons").then((response) => {
-			const data = response as {[key: string] : string};
-			console.log(data["Blue String"]);
-    });
+		loadAchievementIcons();
   }, [achievements]);
 
   useEffect(() => {
