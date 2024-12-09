@@ -1,5 +1,6 @@
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::env;
 use std::fs::File;
 use std::io::Read;
@@ -117,6 +118,16 @@ pub fn load_achievements(client: Client<ClientManager>) -> Result<Vec<Achievemen
         Ok(list) => Ok(list),
         Err(panic_error) => Err(format!("Panic occured: {:?}", panic_error)),
     }
+}
+
+pub fn load_achievement_icons(_client: Client<ClientManager>) -> HashMap<String, String> {
+
+    let mut scores: HashMap<String, String> = HashMap::new(); 
+    scores.insert(String::from("Blue String"), String::from("10"));
+    scores.insert(String::from("Red Number"), String::from("20"));
+
+    scores
+
 }
 
 pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool) {
