@@ -120,14 +120,32 @@ pub fn load_achievements(client: Client<ClientManager>) -> Result<Vec<Achievemen
     }
 }
 
-pub fn load_achievement_icons(_client: Client<ClientManager>) -> HashMap<String, String> {
-
-    let mut scores: HashMap<String, String> = HashMap::new(); 
+pub fn load_achievement_icons(appid: u32) -> HashMap<String, String> {
+    let mut scores: HashMap<String, String> = HashMap::new();
     scores.insert(String::from("Blue String"), String::from("10"));
     scores.insert(String::from("Red Number"), String::from("20"));
 
-    scores
+    let re = Regex::new(r"name(.*?)displaynameenglish(.*?)(icon_gray|icon)(.*?).jpg").unwrap();
 
+    match load_schema(appid) {
+        Ok(data) => {
+            let _captures: Vec<(String, String)> = re
+                .captures_iter(&data)
+                .map(|caps| {
+                    let name: String = caps[1].to_string();
+                    let hash: String = caps[4].to_string();
+                    println!("{}", name);
+                    println!("{}", hash);
+
+                    (name, hash)
+                })
+                .collect();
+        }
+        Err(e) => {
+            println!("{}", e);
+        }
+    }
+    scores
 }
 
 pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool) {
