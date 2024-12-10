@@ -13,6 +13,7 @@ import "./App.css";
 function App() {
   const isInitialized = useRef(false);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+	const [icons, setIcons] = useState<{[key: string]: string}>({});
   const [stats, setStats] = useState<Stat[]>([]);
   const [status, setStatus] = useState<string[]>([]);
   const [info, setInfo] = useState<Info>({
@@ -59,6 +60,7 @@ function App() {
         if (response) {
           updateStatus("Starting client.");
           LoadAchievements();
+					LoadAchievementIcons(newID);
           LoadStatistics(newID);
           UpdateStatusInfo(newID, newName);
         } else {
@@ -80,9 +82,9 @@ function App() {
 
   function LoadAchievementIcons(newID: number) {
     invoke("cmd_load_achievement_icons", { appid: newID }).then((response) => {
-      const data = response as { [key: string]: string };
-      console.log(data["Blue String"]);
-    });
+   		const data = response as { [key: string]: string }; 
+			setIcons(data);
+		});
   }
 
   function LoadStatistics(newID: number) {
@@ -129,8 +131,8 @@ function App() {
         {view == "a" && info.app_id != 0 ? (
           <AchievementView
             achievements={achievements}
+						icons={icons}
             updateStatus={updateStatus}
-						loadAchievementIcons={() => LoadAchievementIcons(info.app_id)}
             loadAchievements={LoadAchievements}
           />
         ) : null}

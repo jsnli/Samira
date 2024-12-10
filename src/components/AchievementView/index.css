@@ -74,8 +74,8 @@
 
 .achievement-view ul li {
 	margin: 0;
-	padding: 10px;
-	height: 25px;	
+	padding: 0 10px;
+	height: 45px;	
 }
 
 .achievement-view ul li:nth-child(even) {
@@ -83,7 +83,10 @@
 }
 
 .achievement-view label {
-	display: inline-block;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	flex-direction: row;
 }
 
 .achievement-view label input[type="checkbox"] {
@@ -91,20 +94,17 @@
 	vertical-align: middle;
 }
 
-.achievement-view label div {
-	display: inline-block;
-	vertical-align: middle;
-	margin-left: 15px;
+.achievement-view label img {
+	height: 80%;
+	margin: 0 15px;
 }
 
 .achievement-view label div .name {
-	display: inline-block;
 	font-size: 14px;
 	color: #f6f6f6;
 }
 
 .achievement-view label div .desc {
-	display: inline-block;
 	font-size: 12px;
 	color: #545454;
 	margin-left: 5px;
