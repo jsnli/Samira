@@ -5,15 +5,15 @@ import { Achievement } from "../../interfaces";
 
 interface AchievementViewProps {
   achievements: Achievement[];
+	icons: {[key: string]: string};
   updateStatus: (message: string | string[]) => void;
-	loadAchievementIcons: () => void;
-  loadAchievements: () => void;
+	loadAchievements: () => void;
 }
 
 function AchievementView({
   achievements,
+	icons,
   updateStatus,
-	loadAchievementIcons,
   loadAchievements,
 }: AchievementViewProps) {
   const [items, setItems] = useState<Achievement[]>([]);
@@ -23,7 +23,6 @@ function AchievementView({
   useEffect(() => {
     const achievementsClone = structuredClone(achievements);
     setItems(achievementsClone);
-		loadAchievementIcons();
   }, [achievements]);
 
   useEffect(() => {
@@ -67,7 +66,6 @@ function AchievementView({
 
   function apply() {
     const alerts: string[] = [];
-    console.log(items, achievements);
     for (let i = 0; i < items.length; i++) {
       if (items[i].status != achievements[i].status) {
         invoke("cmd_commit_achievement", {
@@ -107,7 +105,6 @@ function AchievementView({
 	
 	function refresh() {
 		loadAchievements();
-		loadAchievementIcons();
 	}
 
   return (
@@ -140,6 +137,7 @@ function AchievementView({
                 checked={item.status}
                 onChange={() => handleCheckbox(index)}
               />
+							<img src={icons[item.api_name] + ".jpg"} />
               <div>
                 <span className="name">{item.name}</span>
                 <span className="desc">{item.desc}</span>
