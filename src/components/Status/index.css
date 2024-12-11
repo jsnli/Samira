@@ -9,6 +9,10 @@
 	overflow: scroll;
 }
 
+.status img {
+	width: 100%;
+}
+
 .status .info {
 	width: 100%;
 	display: flex;
