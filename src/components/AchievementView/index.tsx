@@ -5,14 +5,14 @@ import { Achievement } from "../../interfaces";
 
 interface AchievementViewProps {
   achievements: Achievement[];
-	icons: {[key: string]: string};
+  icons: { [key: string]: string };
   updateStatus: (message: string | string[]) => void;
-	loadAchievements: () => void;
+  loadAchievements: () => void;
 }
 
 function AchievementView({
   achievements,
-	icons,
+  icons,
   updateStatus,
   loadAchievements,
 }: AchievementViewProps) {
@@ -102,10 +102,10 @@ function AchievementView({
 
     setItems(lockedItems);
   }
-	
-	function refresh() {
-		loadAchievements();
-	}
+
+  function refresh() {
+    loadAchievements();
+  }
 
   return (
     <div className="achievement-view">
@@ -137,7 +137,12 @@ function AchievementView({
                 checked={item.status}
                 onChange={() => handleCheckbox(index)}
               />
-							<img src={icons[item.api_name] + ".jpg"} />
+              {item.status ? (
+                <img src={icons[item.api_name]} />
+              ) : (
+                <img src={icons[item.api_name + "-gray"]} />
+              )}
+
               <div>
                 <span className="name">{item.name}</span>
                 <span className="desc">{item.desc}</span>

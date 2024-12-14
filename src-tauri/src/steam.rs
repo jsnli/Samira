@@ -2,6 +2,7 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
+use std::fmt::write;
 use std::fs::File;
 use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
@@ -124,29 +125,48 @@ pub fn load_achievement_icons(appid: u32) -> HashMap<String, String> {
     let mut paths: HashMap<String, String> = HashMap::new();
     paths.insert(String::from("Blue String"), String::from("10"));
 
-    let re = Regex::new(r"name(.*?)displaynameenglish(.*?)(icon_gray|icon)(.*?).jpg").unwrap();
+    let re = Regex::new(
+        r"name(.*?)displaynameenglish(.*?)(icon_gray|icon.*?.jpg)?(icon_gray|icon.*?.jpg)?bit",
+    )
+    .unwrap();
 
     match load_schema(appid) {
         Ok(data) => {
-            let captures: Vec<(String, String)> = re
+            let captures: Vec<(String, String, String)> = re
                 .captures_iter(&data)
                 .map(|caps| {
-                    let name: String = caps[1].to_string();
-                    let hash: String = caps[4].to_string();
+                    let name: String = caps.get(1).map_or("None".to_string(), |m| m.as_str().to_string());
+                    let hash1: String = caps.get(3).map_or("None".to_string(), |m| m.as_str().to_string());
+                    let hash2: String = caps.get(4).map_or("None".to_string(), |m| m.as_str().to_string());
 
-                    (name, hash)
+                    (name, hash1, hash2)
                 })
                 .collect();
-            
-            for (key, value) in captures {
-                paths.insert(key, format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, value));
+
+            for (name, mut hash1, mut hash2) in captures {
+
+                if hash1.contains("icon_gray") {
+                    hash1 = hash1.replace("icon_gray", "");
+                    hash2 = hash2.replace("icon", "");
+                    paths.insert(name.to_string() + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash1));
+                    paths.insert(name.to_string(), format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash2));
+                } else if hash2.contains("icon_gray") {
+                    hash2 = hash2.replace("icon_gray", "");
+                    hash1 = hash1.replace("icon", "");
+                    paths.insert(name.to_string() + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash2));
+                    paths.insert(name.to_string(), format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash1));
+                }
+ 
+
+                // paths.insert(name, format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, icon));
+                // paths.insert(name + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, icon_gray));
             }
         }
         Err(e) => {
             println!("{}", e);
         }
     }
-    paths 
+    paths
 }
 
 pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool) {
