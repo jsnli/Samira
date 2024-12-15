@@ -147,7 +147,7 @@ fn cmd_load_achievement_icons(app_handle: AppHandle, appid: u32) -> HashMap<Stri
     let client = state.client.lock().unwrap().clone();
 
     match client {
-        Some(client) => {
+        Some(_client) => {
             steam::load_achievement_icons(appid)
         },
         None => {
