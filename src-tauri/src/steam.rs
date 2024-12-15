@@ -2,7 +2,6 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
-use std::fmt::write;
 use std::fs::File;
 use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
