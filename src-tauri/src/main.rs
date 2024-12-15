@@ -22,6 +22,7 @@ async fn main() {
         })
         .invoke_handler(tauri::generate_handler![
             cmd_request_data,
+            cmd_request_app_name,
             cmd_populate_data,
             cmd_query_id,
             cmd_query_name,
@@ -66,6 +67,29 @@ async fn cmd_request_data(_app_handle: AppHandle) -> Vec<App> {
 }
 
 #[tauri::command]
+async fn cmd_request_app_name(_app_handle: AppHandle, appid: i32) -> String {
+    let mut name: String = String::new();
+    match database::request_app_name(appid).await {
+        Ok(appname) => {
+            name = appname;
+        }
+        Err(e) => {
+            eprintln!("Error: {}", e);
+        }
+    }
+    name
+    // match database::request_app_name(appid).await {
+    //     Ok(appname) => {
+    //         name = appname; 
+    //     }
+    //     Err(e) => {
+    //         eprintln!("Error: {}", e);
+    //     }
+    // }
+    // name
+}
+
+#[tauri::command]
 async fn cmd_populate_data(app_handle: AppHandle, apps: Vec<App>) {
     let _ = app_handle.db_mut(|db| database::populate_data(db, apps));
 }
@@ -77,8 +101,8 @@ async fn cmd_query_id(app_handle: AppHandle, appid: i32) -> App {
         Err(e) => App {
             appid: 0,
             name: e.to_string(),
-            last_modified: 0,
-            price_change_number: 0,
+            last_modified: Some(0),
+            price_change_number: Some(0),
         },
     }
 }
