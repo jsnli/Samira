@@ -5,8 +5,18 @@ use serde::{Deserialize, Serialize};
 pub struct App {
     pub appid: i32,
     pub name: String,
-    pub last_modified: i32,
-    pub price_change_number: i32,
+    pub last_modified: Option<i32>,
+    pub price_change_number: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AppList {
+    apps: Vec<App>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ApiResponse {
+    applist: AppList
 }
 
 pub fn init_db() -> Result<Connection, rusqlite::Error> {
@@ -33,6 +43,21 @@ pub async fn request_data() -> Result<Vec<App>, reqwest::Error> {
     let apps: Vec<App> = res.json().await?;
 
     Ok(apps)
+}
+
+pub async fn request_app_name(appid: i32) -> Result<String, reqwest::Error> {
+    let url = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
+
+    let res: ApiResponse = reqwest::get(url).await?.json().await?;
+
+    let mut name: String = String::new();
+
+    match res.applist.apps.iter().find(|app| app.appid == appid) {
+        Some(app) => name = String::from(app.name.clone()),
+        None => println!("App not found"),
+    }
+
+    Ok(name) 
 }
 
 pub fn populate_data(db: &mut Connection, apps: Vec<App>) {

@@ -53,15 +53,12 @@ function Search({ onAppSelection, updateStatus, databaseReady }: SearchProps) {
     setActive(false);
   }
 
-  function handleAppIDLaunch(id: number) {
-    invoke("cmd_query_id", { appid: Number(query) }).then((response) => {
-      const app = response as App;
-      if (app.appid > 0) {
-				handleItemClick(app);
-      } else {
-        updateStatus(`No game found for App ID: ${id}`);
-      }
-    });
+  function manualAppIDLaunch(id: number) {
+		invoke("cmd_request_app_name", { appid: id }).then((response) => {
+			let name = response as string;	
+			onAppSelection(id, name);
+			setActive(false);
+		}) 
   }
 
   return (
@@ -85,7 +82,7 @@ function Search({ onAppSelection, updateStatus, databaseReady }: SearchProps) {
         {!isNaN(Number(query)) && query.length > 0 ? (
           <li
             className="search-item"
-            onClick={() => handleAppIDLaunch(Number(query))}
+            onClick={() => manualAppIDLaunch(Number(query))}
           >
             Launch AppId - {query}
           </li>
