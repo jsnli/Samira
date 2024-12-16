@@ -5,11 +5,10 @@ import { App } from "../../interfaces";
 
 interface SearchProps {
   onAppSelection: (newID: number, newName: string) => void;
-  updateStatus: (message: string | string[]) => void;
   databaseReady: boolean;
 }
 
-function Search({ onAppSelection, updateStatus, databaseReady }: SearchProps) {
+function Search({ onAppSelection, databaseReady }: SearchProps) {
   const [query, setQuery] = useState("");
   const [applist, setApplist] = useState<App[]>([]);
   const [active, setActive] = useState<boolean>(false);

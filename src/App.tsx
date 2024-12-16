@@ -117,7 +117,6 @@ function App() {
         <Search
           onAppSelection={handleAppSelection}
           databaseReady={databaseReady}
-          updateStatus={updateStatus}
         />
         <Tabs handleSelectView={selectView} />
         <Status message={status} info={info} />
