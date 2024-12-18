@@ -6,7 +6,7 @@ import { invoke } from "@tauri-apps/api/core";
 interface StatisticViewProps {
 	stats: Stat[];
 	updateStatus: (message: string | string[]) => void;
-	loadStatistics: () => void;
+	loadStatistics: (refresh: boolean) => void;
 }
 
 function StatisticView({ stats, updateStatus, loadStatistics }: StatisticViewProps) {
@@ -42,21 +42,18 @@ function StatisticView({ stats, updateStatus, loadStatistics }: StatisticViewPro
 
 		invoke("cmd_store_stats").then(() => {
 			updateStatus(alerts);
+			loadStatistics(false);
 		});
 	}
 
 	function resetDefaultValues() {
-		refresh();
+		loadStatistics(true);	
 		const inputs = document.querySelectorAll<HTMLInputElement>(
 			".statistic-view ul li input",
 		);
 		for (let i = 0; i < inputs.length; i++) {
 			inputs[i].value = items[i].value.toString();
 		}
-	}
-
-	function refresh() {
-		loadStatistics();
 	}
 
 	return (
