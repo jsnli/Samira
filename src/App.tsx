@@ -67,9 +67,9 @@ function App() {
 			invoke("cmd_start_client", { appid: newID }).then((response) => {
 				if (response) {
 					updateStatus("Starting client.");
-					LoadAchievements(false);
+					LoadStatistics(newID, true);
+					LoadAchievements(true);
 					LoadAchievementIcons(newID);
-					LoadStatistics(newID, false);
 					UpdateStatusInfo(newID, newName);
 				} else {
 					updateStatus(
@@ -84,7 +84,7 @@ function App() {
 		invoke("cmd_load_achievements").then((response) => {
 			const data = response as Achievement[];
 			setAchievements(data);
-			refresh ? updateStatus("Achievements refreshed") : null;
+			refresh ? updateStatus("Achievements loaded") : null;
 		});
 	}
 
@@ -99,7 +99,7 @@ function App() {
 		invoke("cmd_load_statistics", { appid: newID }).then((response) => {
 			const data = response as Stat[];
 			setStats(data);
-			refresh ? updateStatus("Statistics refreshed") : null;
+			refresh ? updateStatus("Statistics loaded") : null;
 		});
 	}
 
