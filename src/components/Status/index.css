@@ -48,6 +48,8 @@
 	color: #545454;
 }
 
-.status .log ul li:first-child {
+.status .log ul li.recent {
 	color: #f6f6f6;
 }
+
+
