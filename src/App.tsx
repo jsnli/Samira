@@ -41,18 +41,16 @@ function App() {
 	}, []);
 
 	function updateStatus(input: string | string[]) {
-
-
 		if (typeof input === "string") {
 			setStatus((prev) => [
 				[input, true],
-				...prev.map(([message, _]) => [message, false] as [string, boolean])
+				...prev.map(([message, _]) => [message, false] as [string, boolean]),
 			]);
 			// setStatus((prevStatus) => [input, ...prevStatus]);
 		} else if (Array.isArray(input)) {
 			setStatus((prev) => [
-				...input.map(message => [message,true] as [string, boolean]),
-				...prev.map(([message, _]) => [message, false] as [string, boolean])
+				...input.map((message) => [message, true] as [string, boolean]),
+				...prev.map(([message, _]) => [message, false] as [string, boolean]),
 			]);
 			// setStatus((prevStatus) => [...input, ...prevStatus]);
 		}
@@ -69,9 +67,9 @@ function App() {
 			invoke("cmd_start_client", { appid: newID }).then((response) => {
 				if (response) {
 					updateStatus("Starting client.");
-					LoadAchievements();
+					LoadAchievements(false);
 					LoadAchievementIcons(newID);
-					LoadStatistics(newID);
+					LoadStatistics(newID, false);
 					UpdateStatusInfo(newID, newName);
 				} else {
 					updateStatus(
@@ -82,11 +80,11 @@ function App() {
 		}
 	}
 
-	function LoadAchievements() {
+	function LoadAchievements(refresh: boolean) {
 		invoke("cmd_load_achievements").then((response) => {
 			const data = response as Achievement[];
 			setAchievements(data);
-			updateStatus("Achievements loaded.");
+			refresh ? updateStatus("Achievements refreshed") : null;
 		});
 	}
 
@@ -97,11 +95,11 @@ function App() {
 		});
 	}
 
-	function LoadStatistics(newID: number) {
+	function LoadStatistics(newID: number, refresh: boolean) {
 		invoke("cmd_load_statistics", { appid: newID }).then((response) => {
 			const data = response as Stat[];
 			setStats(data);
-			updateStatus("Statistics loaded.");
+			refresh ? updateStatus("Statistics refreshed") : null;
 		});
 	}
 
@@ -149,7 +147,7 @@ function App() {
 					<StatisticView
 						stats={stats}
 						updateStatus={updateStatus}
-						loadStatistics={() => LoadStatistics(info.app_id)}
+						loadStatistics={(refresh: boolean) => LoadStatistics(info.app_id, refresh)}
 					/>
 				) : null}
 			</div>

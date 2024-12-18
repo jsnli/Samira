@@ -7,7 +7,7 @@ interface AchievementViewProps {
   achievements: Achievement[];
   icons: { [key: string]: string };
   updateStatus: (message: string | string[]) => void;
-  loadAchievements: () => void;
+  loadAchievements: (refresh: boolean) => void;
 }
 
 function AchievementView({
@@ -81,6 +81,7 @@ function AchievementView({
 
     invoke("cmd_store_stats").then(() => {
       updateStatus(alerts);
+			loadAchievements(false);
     });
   }
 
@@ -103,10 +104,6 @@ function AchievementView({
     setItems(lockedItems);
   }
 
-  function refresh() {
-    loadAchievements();
-  }
-
   return (
     <div className="achievement-view">
       <div className="nav">
@@ -117,7 +114,7 @@ function AchievementView({
           placeholder="Filter by name or description"
           onChange={handleFilterInput}
         />
-        <button onClick={refresh}>Refresh</button>
+        <button onClick={() => loadAchievements(true)}>Refresh</button>
         <button className="apply" onClick={apply}>
           Apply Changes
         </button>
