@@ -18,7 +18,7 @@ function Search({ onAppSelection, databaseReady }: SearchProps) {
   useEffect(() => {
     let debounce = setTimeout(() => {
       search(query);
-    }, 500);
+    }, 750);
 
     return () => {
       clearTimeout(debounce);
@@ -34,7 +34,7 @@ function Search({ onAppSelection, databaseReady }: SearchProps) {
   }
 
   function search(value: string) {
-    if (!value.length) return;
+    if (value.length < 2) return;
     invoke("cmd_query_name", { name: value }).then((response) => {
       setApplist(response as App[]);
     });
