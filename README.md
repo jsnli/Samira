@@ -1,6 +1,6 @@
 # Samira
 
-A steam achievement manager for linux
+A Steam achievement manager for linux
 
 ![example](./assets/screenshot.png)
 
@@ -46,7 +46,3 @@ On arch based distributions, a bundling error may occur due to Tauri and linuxde
 ```
 NO_STRIP=true npm run tauri build
 ```
-
-
-
-
