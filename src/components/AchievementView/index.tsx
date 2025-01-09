@@ -124,6 +124,9 @@ function AchievementView({
         <button onClick={() => selectAll(false)}>Deselect All</button>
         <button onClick={() => selectLocked(false)}>Locked Only</button>
         <button onClick={() => selectLocked(true)}>Unlocked Only</button>
+				<span className="progress">
+					{items.filter(items => items.status).length} / {items.length}
+				</span>
       </div>
       <ul>
         {items.map((item, index) => (
