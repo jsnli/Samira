@@ -7,10 +7,8 @@ A Steam achievement manager for linux
 ## Description
 Samira is a desktop application that allows you to unlock achievements and set statistics. The long term goal of this project is to recreate all features of the original [SAM](https://github.com/gibbed/SteamAchievementManager) on Linux, Windows, and MacOS. 
 
-Steam Flatpak is not currently supported. 
-
 ## Installation and Usage
-AppImage and .deb file can be found [here](https://github.com/jsnli/Samira/releases).
+Releases can be found [here](https://github.com/jsnli/Samira/releases).
 
 Steam must be running and the user must be logged in.
 
@@ -46,3 +44,6 @@ On arch based distributions, a bundling error may occur due to Tauri and linuxde
 ```
 NO_STRIP=true npm run tauri build
 ```
+
+## Contributing
+Like its predecessors, Samira is open source and open to contributions. Documentation will follow in the near future, for now please feel free to ask questions and open issues. 
