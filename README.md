@@ -1,6 +1,6 @@
 # Samira
 
-A Steam achievement manager for linux
+A Steam Achievement Manager for Linux
 
 ![example](./assets/screenshot.png)
 
@@ -40,10 +40,10 @@ npm run tauri dev
 npm run tauri build
 ```
 
-On arch based distributions, a bundling error may occur due to Tauri and linuxdeploy using the wrong `strip` binary. A workaround is available:
+On Arch based distributions, a bundling error may occur due to Tauri and linuxdeploy using the wrong `strip` binary. A workaround is available:
 ```
 NO_STRIP=true npm run tauri build
 ```
 
 ## Contributing
-Like its predecessors, Samira is open source and open to contributions. Documentation will follow in the near future, for now please feel free to ask questions and open issues. 
+Like its predecessors, Samira is open source and open to contributions. Documentation will follow in the near future. Please feel free to ask questions, open pull requests, and raise issues.
