@@ -41,7 +41,6 @@
 }
 
 .achievement-view .subnav {
-	display: flex;
 	width: 100%;
 	height: 25px;
 	position: absolute;
@@ -58,6 +57,10 @@
 	margin: 0 5px 0 0;
 	font-size: 12px;
 	cursor: pointer;
+}
+
+.achievement-view .subnav .progress {
+	float: right;
 }
 
 .achievement-view ul {
