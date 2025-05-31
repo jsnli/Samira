@@ -59,7 +59,7 @@ async fn cmd_request_data(_app_handle: AppHandle) -> Vec<App> {
             applist.extend(app);
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Request Data Error: {}", e);
         }
     }
 
@@ -74,19 +74,10 @@ async fn cmd_request_app_name(_app_handle: AppHandle, appid: i32) -> String {
             name = appname;
         }
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Request App Name Error: {}", e);
         }
     }
-    name
-    // match database::request_app_name(appid).await {
-    //     Ok(appname) => {
-    //         name = appname; 
-    //     }
-    //     Err(e) => {
-    //         eprintln!("Error: {}", e);
-    //     }
-    // }
-    // name
+    name 
 }
 
 #[tauri::command]
@@ -112,7 +103,7 @@ async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
     match app_handle.db_mut(|db| database::query_name(db, name)) {
         Ok(applist) => applist,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Query Name Error: {}", e);
             let empty: Vec<App> = Vec::new();
             empty
         }
