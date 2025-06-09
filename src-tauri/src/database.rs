@@ -37,14 +37,19 @@ pub fn init_db() -> Result<Connection, rusqlite::Error> {
 
 pub async fn request_data() -> Result<Vec<App>, reqwest::Error> {
     let games_res = reqwest::get("https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json").await?;
-    let app_null_filter: Vec<Option<App>> = games_res.json().await?;
+    let games_null_filter: Vec<Option<App>> = games_res.json().await?;
 
-    let mut apps: Vec<App> = app_null_filter.into_iter()
+    let mut apps: Vec<App> = games_null_filter.into_iter()
         .filter_map(|app| app)
         .collect();
 
     let software_res = reqwest::get("https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/software_appid.json").await?;
-    let software: Vec<App> = software_res.json().await?;
+    let software_null_filter: Vec<Option<App>> = software_res.json().await?;
+
+    let software: Vec<App> = software_null_filter.into_iter()
+        .filter_map(|app| app)
+        .collect();
+
 
     apps.extend(software);
 
