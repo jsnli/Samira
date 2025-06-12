@@ -19,30 +19,36 @@ Flatpak is not currently supported. Steam must be installed through your distrib
 To build this project you'll need the [prerequisites](https://tauri.app/start/prerequisites/) for Tauri as well as Rust, Node, and npm.
 
 Clone the repository and install: 
-```
+```bash
 cd Samira && npm install
 ```
 
 Tauri does not automatically set library search paths. This is a known issue in Tauri and until an official fix is available we need to set it ourselves: 
-```
+```bash
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/libsteam_api.so
 ```
 
 The `libsteam_api.so` file is available in `/assets/`.
 
 **Dev**
-```
+```bash
 npm run tauri dev
 ```
 
 **Build**
-```
+```bash
 npm run tauri build
 ```
 
-On Arch based distributions, a bundling error may occur due to Tauri and linuxdeploy using the wrong `strip` binary. A workaround is available:
-```
+On Arch based distributions, a bundling error may occur due to _Tauri_ and _linuxdeploy_ using the wrong `strip` binary. A workaround is available:
+
+```bash
 NO_STRIP=true npm run tauri build
+```
+
+If that continues not to work, run:
+```bash
+sudo pacman -S rust
 ```
 
 ## Contributing
