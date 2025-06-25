@@ -7,7 +7,7 @@ use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
 use std::sync::{Arc, Mutex};
 
-use steamworks::{Client, ClientManager, UserStatsReceived};
+use steamworks::{Client, UserStatsReceived};
 
 #[derive(Serialize, Deserialize)]
 pub struct Achievement {
@@ -41,7 +41,7 @@ impl Default for User {
     }
 }
 
-pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
+pub fn start_client(appid: u32) -> Result<Client, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let waiting = Arc::new(Mutex::new(true));
         let waiting_clone = Arc::clone(&waiting);
@@ -79,14 +79,14 @@ pub fn start_client(appid: u32) -> Result<Client<ClientManager>, String> {
     }
 }
 
-pub fn retrieve_user(client: Client<ClientManager>) -> User {
+pub fn retrieve_user(client: Client) -> User {
     User {
         user_name: client.friends().name(),
         user_steam_id: client.user().steam_id().raw(),
     }
 }
 
-pub fn load_achievements(client: Client<ClientManager>) -> Result<Vec<Achievement>, String> {
+pub fn load_achievements(client: Client) -> Result<Vec<Achievement>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let user_stats = client.user_stats();
 
@@ -168,7 +168,7 @@ pub fn load_achievement_icons(appid: u32) -> HashMap<String, String> {
     paths
 }
 
-pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked: bool) {
+pub fn commit_achievement(client: Client, name: String, unlocked: bool) {
     let user_stats = client.user_stats();
     let achievement = user_stats.achievement(&name);
     if unlocked {
@@ -178,7 +178,7 @@ pub fn commit_achievement(client: Client<ClientManager>, name: String, unlocked:
     }
 }
 
-pub fn store_stats(client: Client<ClientManager>) {
+pub fn store_stats(client: Client) {
     let user_stats = client.user_stats();
     let _ = user_stats.store_stats();
 }
@@ -202,7 +202,7 @@ pub fn load_schema(appid: u32) -> std::io::Result<String> {
     Ok(cleaned)
 }
 
-pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
+pub fn load_statistics(client: Client, appid: u32) -> Vec<Stat> {
     let user_stats = client.user_stats();
 
     let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:maxchange(\d+))?(?:incrementonly(\d+))?(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
@@ -270,7 +270,7 @@ pub fn load_statistics(client: Client<ClientManager>, appid: u32) -> Vec<Stat> {
     stats
 }
 
-pub fn commit_statistics(client: Client<ClientManager>, name: String, value: i32) {
+pub fn commit_statistics(client: Client, name: String, value: i32) {
     let user_stats = client.user_stats();
     let _ = user_stats.set_stat_i32(&name, value);
 }

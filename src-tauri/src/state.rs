@@ -1,11 +1,11 @@
 use rusqlite::Connection;
 use std::sync::Mutex;
-use steamworks::{Client, ClientManager};
+use steamworks::{Client};
 use tauri::{AppHandle, Manager, State};
 
 pub struct AppState {
     pub db: Mutex<Option<Connection>>,
-    pub client: Mutex<Option<Client<ClientManager>>>,
+    pub client: Mutex<Option<Client>>,
 }
 
 pub trait ServiceAccess {
