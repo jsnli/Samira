@@ -60,7 +60,7 @@ pub fn start_client(appid: u32) -> Result<Client, String> {
         client.run_callbacks();
 
         // to-do: handle this more gracefully
-        for _ in 0..50 {
+        for _ in 0..10 {
             client.run_callbacks();
             ::std::thread::sleep(::std::time::Duration::from_millis(100));
 
