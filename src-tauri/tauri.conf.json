@@ -28,7 +28,8 @@
     "windows": [
       {
         "title": "samira",
-				"decorations": false,
+				"theme": "dark",
+				"decorations": true,
         "resizable": true,
         "fullscreen": false,
         "useHttpsScheme": true,
