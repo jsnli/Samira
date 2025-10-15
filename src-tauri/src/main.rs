@@ -3,19 +3,19 @@
 #![allow(non_snake_case)]
 
 mod data;
-// mod database;
+mod database;
 mod state;
 mod steam;
 
 // use database::App;
 use std::collections::HashMap;
 use std::sync::Mutex;
-use state::{AppState};
+use state::{AppState, ServiceAccess};
 use steam::{Achievement, Stat, User};
 use tauri::{AppHandle, Manager, State};
 
-#[tokio::main]
-async fn main() {
+//#[tokio::main]
+fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .manage(AppState {
@@ -23,7 +23,7 @@ async fn main() {
             client: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
-            // cmd_request_data,
+            cmd_request_data,
             // cmd_request_app_name,
             // cmd_populate_data,
             // cmd_query_id,
@@ -38,35 +38,56 @@ async fn main() {
             cmd_retrieve_user,
         ])
         .setup(|app| {
-            let handle = app.handle();
-
+            let handle = app.handle().clone();
+            
             // let app_state: State<AppState> = handle.state();
 
             // let db = database::init_db().expect("Failed to open database connection");
             //
             // *app_state.db.lock().unwrap() = Some(db);
             
+            let games = data::fetch_games()?;
+
+            let app_state: State<AppState> = handle.state();
+            let mut data_guard = app_state.data.lock().unwrap();
+            *data_guard = Some(games);
+            
+            // tauri::async_runtime::spawn(async move {
+            //     if let Err(e) = load_data(&handle).await {
+            //         eprintln!("Failed to load data: {}", e);
+            //     }
+            // });
+            // 
             Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+
+// async fn load_data(handle: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
+//     let url = "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json";
+//     let games = data::fetch_games(url)?;
 //
-// #[tauri::command]
-// async fn cmd_request_data(_app_handle: AppHandle) -> Vec<App> {
-//     let mut applist: Vec<App> = Vec::new();
+//     let app_state = handle.state::<AppState>();
+//     let mut data_guard = app_state.data.lock().unwrap();
+//     *data_guard = Some(games);
 //
-//     match database::request_data().await {
-//         Ok(app) => {
-//             applist.extend(app);
-//         }
-//         Err(e) => {
-//             eprintln!("Request Data Error: {}", e);
-//         }
-//     }
-//
-//     applist
+//     println!("Data loaded into memory");
+//     Ok(())
 // }
+//
+#[tauri::command]
+async fn cmd_request_data(handle: AppHandle) {
+
+    handle.data(|games| {
+        let first_twenty = games.iter().take(20);
+
+        for game in first_twenty {
+            println!("{} - {}", game.name, game.appid);
+        }
+    })
+
+}
 
 // #[tauri::command]
 // async fn cmd_request_app_name(_app_handle: AppHandle, appid: i32) -> String {

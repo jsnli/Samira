@@ -33,10 +33,11 @@ function App() {
 		isInitialized.current = true;
 		updateStatus("Loading database.");
 		invoke("cmd_request_data").then((response) => {
-			invoke("cmd_populate_data", { apps: response }).then(() => {
-				updateStatus("Database ready.");
-				setDatabaseReady(true);
-			});
+			// invoke("cmd_populate_data", { apps: response }).then(() => {
+			// 	updateStatus("Database ready.");
+			// 	setDatabaseReady(true);
+			// });
+			setDatabaseReady(true);
 		});
 	}, []);
 

@@ -4,11 +4,13 @@ use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Game {
-    appid: u32,
-    name: String,
+    pub appid: u32,
+    pub name: String,
 }
 
-pub fn fetch_games(url: &str) -> Result<Vec<Game>, Box<dyn std::error::Error>> {
+pub fn fetch_games() -> Result<Vec<Game>, Box<dyn std::error::Error>> {
+    let url = "https://raw.githubusercontent.com/jsnli/steamappidlist/master/data/games_appid.json";
+
     let client = Client::builder()
         .timeout(Duration::from_secs(15))
         .user_agent("steam-fetch/0.1 (+https://github.com/jsnli)")
