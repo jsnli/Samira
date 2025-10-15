@@ -28,7 +28,7 @@
     "windows": [
       {
         "title": "samira",
-				"theme": "dark",
+				"theme": "Dark",
 				"decorations": true,
         "resizable": true,
         "fullscreen": false,
