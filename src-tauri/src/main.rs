@@ -3,13 +3,14 @@
 #![allow(non_snake_case)]
 
 mod data;
-mod database;
+// mod database;
 mod state;
 mod steam;
 
-use database::App;
+// use database::App;
 use std::collections::HashMap;
-use state::{AppState, ServiceAccess};
+use std::sync::Mutex;
+use state::{AppState};
 use steam::{Achievement, Stat, User};
 use tauri::{AppHandle, Manager, State};
 
@@ -18,15 +19,15 @@ async fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .manage(AppState {
-            db: Default::default(),
-            client: Default::default(),
+            data: Mutex::new(None),
+            client: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
-            cmd_request_data,
-            cmd_request_app_name,
-            cmd_populate_data,
-            cmd_query_id,
-            cmd_query_name,
+            // cmd_request_data,
+            // cmd_request_app_name,
+            // cmd_populate_data,
+            // cmd_query_id,
+            // cmd_query_name,
             cmd_start_client,
             cmd_load_achievements,
             cmd_load_achievement_icons,
@@ -39,77 +40,77 @@ async fn main() {
         .setup(|app| {
             let handle = app.handle();
 
-            let app_state: State<AppState> = handle.state();
+            // let app_state: State<AppState> = handle.state();
 
-            let db = database::init_db().expect("Failed to open database connection");
-
-            *app_state.db.lock().unwrap() = Some(db);
-
+            // let db = database::init_db().expect("Failed to open database connection");
+            //
+            // *app_state.db.lock().unwrap() = Some(db);
+            
             Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
+//
+// #[tauri::command]
+// async fn cmd_request_data(_app_handle: AppHandle) -> Vec<App> {
+//     let mut applist: Vec<App> = Vec::new();
+//
+//     match database::request_data().await {
+//         Ok(app) => {
+//             applist.extend(app);
+//         }
+//         Err(e) => {
+//             eprintln!("Request Data Error: {}", e);
+//         }
+//     }
+//
+//     applist
+// }
 
-#[tauri::command]
-async fn cmd_request_data(_app_handle: AppHandle) -> Vec<App> {
-    let mut applist: Vec<App> = Vec::new();
+// #[tauri::command]
+// async fn cmd_request_app_name(_app_handle: AppHandle, appid: i32) -> String {
+//     let mut name: String = String::new();
+//     match database::request_app_name(appid).await {
+//         Ok(appname) => {
+//             name = appname;
+//         }
+//         Err(e) => {
+//             eprintln!("Request App Name Error: {}", e);
+//         }
+//     }
+//     name 
+// }
 
-    match database::request_data().await {
-        Ok(app) => {
-            applist.extend(app);
-        }
-        Err(e) => {
-            eprintln!("Request Data Error: {}", e);
-        }
-    }
+// #[tauri::command]
+// async fn cmd_populate_data(app_handle: AppHandle, apps: Vec<App>) {
+//     let _ = app_handle.db_mut(|db| database::populate_data(db, apps));
+// }
+//
+// #[tauri::command]
+// async fn cmd_query_id(app_handle: AppHandle, appid: i32) -> App {
+//     match app_handle.db_mut(|db| database::query_id(db, appid)) {
+//         Ok(app) => app,
+//         Err(e) => App {
+//             appid: 0,
+//             name: e.to_string(),
+//             last_modified: Some(0),
+//             price_change_number: Some(0),
+//         },
+//     }
+// }
 
-    applist
-}
-
-#[tauri::command]
-async fn cmd_request_app_name(_app_handle: AppHandle, appid: i32) -> String {
-    let mut name: String = String::new();
-    match database::request_app_name(appid).await {
-        Ok(appname) => {
-            name = appname;
-        }
-        Err(e) => {
-            eprintln!("Request App Name Error: {}", e);
-        }
-    }
-    name 
-}
-
-#[tauri::command]
-async fn cmd_populate_data(app_handle: AppHandle, apps: Vec<App>) {
-    let _ = app_handle.db_mut(|db| database::populate_data(db, apps));
-}
-
-#[tauri::command]
-async fn cmd_query_id(app_handle: AppHandle, appid: i32) -> App {
-    match app_handle.db_mut(|db| database::query_id(db, appid)) {
-        Ok(app) => app,
-        Err(e) => App {
-            appid: 0,
-            name: e.to_string(),
-            last_modified: Some(0),
-            price_change_number: Some(0),
-        },
-    }
-}
-
-#[tauri::command]
-async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
-    match app_handle.db_mut(|db| database::query_name(db, name)) {
-        Ok(applist) => applist,
-        Err(e) => {
-            eprintln!("Query Name Error: {}", e);
-            let empty: Vec<App> = Vec::new();
-            empty
-        }
-    }
-}
+// #[tauri::command]
+// async fn cmd_query_name(app_handle: AppHandle, name: String) -> Vec<App> {
+//     match app_handle.db_mut(|db| database::query_name(db, name)) {
+//         Ok(applist) => applist,
+//         Err(e) => {
+//             eprintln!("Query Name Error: {}", e);
+//             let empty: Vec<App> = Vec::new();
+//             empty
+//         }
+//     }
+// }
 
 #[tauri::command]
 fn cmd_start_client(app_handle: AppHandle, appid: u32) -> bool {

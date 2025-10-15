@@ -3,12 +3,12 @@ use std::time::Duration;
 use serde::Deserialize;
 
 #[derive(Debug, Clone, Deserialize)]
-struct Game {
+pub struct Game {
     appid: u32,
     name: String,
 }
 
-fn fetch_games(url: &str) -> Result<Vec<Game>, Box<dyn std::error::Error>> {
+pub fn fetch_games(url: &str) -> Result<Vec<Game>, Box<dyn std::error::Error>> {
     let client = Client::builder()
         .timeout(Duration::from_secs(15))
         .user_agent("steam-fetch/0.1 (+https://github.com/jsnli)")
