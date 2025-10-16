@@ -2,15 +2,16 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![allow(non_snake_case)]
 
-mod data;
 mod database;
+mod dataset;
 mod state;
 mod steam;
 
 // use database::App;
+use dataset::Game;
+use state::{AppState, ServiceAccess};
 use std::collections::HashMap;
 use std::sync::Mutex;
-use state::{AppState, ServiceAccess};
 use steam::{Achievement, Stat, User};
 use tauri::{AppHandle, Manager, State};
 
@@ -28,6 +29,7 @@ fn main() {
             // cmd_populate_data,
             // cmd_query_id,
             // cmd_query_name,
+            cmd_search_name,
             cmd_start_client,
             cmd_load_achievements,
             cmd_load_achievement_icons,
@@ -39,29 +41,36 @@ fn main() {
         ])
         .setup(|app| {
             let handle = app.handle().clone();
-            
+
             // let app_state: State<AppState> = handle.state();
 
             // let db = database::init_db().expect("Failed to open database connection");
             //
             // *app_state.db.lock().unwrap() = Some(db);
-            
-            let games = data::fetch_games()?;
+
+            let games = dataset::fetch_games()?;
 
             let app_state: State<AppState> = handle.state();
             let mut data_guard = app_state.data.lock().unwrap();
             *data_guard = Some(games);
-            
+
             // tauri::async_runtime::spawn(async move {
             //     if let Err(e) = load_data(&handle).await {
             //         eprintln!("Failed to load data: {}", e);
             //     }
             // });
-            // 
+            //
             Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn cmd_search_name(handle: AppHandle, query: String) -> Vec<Game> {
+    handle.data(|games| {
+        dataset::fuzzy_search(games, &query, 10)
+    })
 }
 
 // async fn load_data(handle: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
@@ -78,7 +87,6 @@ fn main() {
 //
 #[tauri::command]
 async fn cmd_request_data(handle: AppHandle) {
-
     handle.data(|games| {
         let first_twenty = games.iter().take(20);
 
@@ -86,7 +94,6 @@ async fn cmd_request_data(handle: AppHandle) {
             println!("{} - {}", game.name, game.appid);
         }
     })
-
 }
 
 // #[tauri::command]
@@ -100,7 +107,7 @@ async fn cmd_request_data(handle: AppHandle) {
 //             eprintln!("Request App Name Error: {}", e);
 //         }
 //     }
-//     name 
+//     name
 // }
 
 // #[tauri::command]
@@ -185,9 +192,7 @@ fn cmd_load_achievement_icons(app_handle: AppHandle, appid: u32) -> HashMap<Stri
     let client = state.client.lock().unwrap().clone();
 
     match client {
-        Some(_client) => {
-            steam::load_achievement_icons(appid)
-        },
+        Some(_client) => steam::load_achievement_icons(appid),
         None => {
             println!("No Client Found");
             HashMap::new()

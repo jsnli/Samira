@@ -3,7 +3,7 @@
 use std::sync::Mutex;
 use tauri::{AppHandle, Manager, State};
 
-use crate::data::Game;
+use crate::dataset::Game;
 use steamworks::Client;
 
 pub struct AppState {

@@ -35,9 +35,13 @@ function Search({ onAppSelection, databaseReady }: SearchProps) {
 
   function search(value: string) {
     if (value.length < 2) return;
-    invoke("cmd_query_name", { name: value }).then((response) => {
-      setApplist(response as App[]);
-    });
+    // invoke("cmd_query_name", { name: value }).then((response) => {
+    //   setApplist(response as App[]);
+    // });
+		
+		invoke("cmd_search_name", {query: value}).then((response) => {
+			setApplist(response as App[]);	
+		})
   }
 
   function handleChange(event: ChangeEvent<HTMLInputElement>) {

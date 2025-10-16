@@ -37,7 +37,9 @@ function App() {
 			// 	updateStatus("Database ready.");
 			// 	setDatabaseReady(true);
 			// });
+			console.log(response);
 			setDatabaseReady(true);
+			updateStatus("Database ready.");
 		});
 	}, []);
 

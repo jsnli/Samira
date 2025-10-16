@@ -20,6 +20,7 @@ rusqlite = { version = "0.32.1", features = ["bundled"] }
 regex = "1.11.0"
 tauri-plugin-shell = "2"
 steamworks = "0.12.0"
+fuzzy-matcher = "0.3"
 
 [features]
 # This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
