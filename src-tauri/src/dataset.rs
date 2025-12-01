@@ -30,15 +30,22 @@ use fuzzy_matcher::skim::SkimMatcherV2;
 use fuzzy_matcher::FuzzyMatcher;
 
 pub fn fuzzy_search(games: &[Game], query: &str, limit: usize) -> Vec<Game> {
-    if query.trim().is_empty() {
+    let query = query.trim().to_lowercase();
+    if query.is_empty() {
         return vec![];
     }
 
     let matcher = SkimMatcherV2::default();
-    let mut scored: Vec<_> = games
+
+    let mut scored: Vec<(i64, &Game)> = games
         .iter()
-        .filter_map(|g| matcher.fuzzy_match(&g.name, query).map(|score| (score, g)))
+        .filter_map(|g| {
+            let name_score = matcher.fuzzy_match(&g.name.to_lowercase(), &query);
+            let id_score = matcher.fuzzy_match(&g.appid.to_string(), &query);
+            name_score.or(id_score).map(|score| (score, g))
+        })
         .collect();
+
 
     scored.sort_by(|a, b| b.0.cmp(&a.0));
 
