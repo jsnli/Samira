@@ -155,10 +155,6 @@ pub fn load_achievement_icons(appid: u32) -> HashMap<String, String> {
                     paths.insert(name.to_string() + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash2));
                     paths.insert(name.to_string(), format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash1));
                 }
- 
-
-                // paths.insert(name, format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, icon));
-                // paths.insert(name + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, icon_gray));
             }
         }
         Err(e) => {
