@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 import Search from "./components/Search";
@@ -24,23 +24,17 @@ function App() {
 
 	const [view, setView] = useState<"a" | "s">("a");
 
-	useEffect(() => {
-		console.log('App Use Effect');
-	}, []);
-
 	function updateStatus(input: string | string[]) {
 		if (typeof input === "string") {
 			setStatus((prev) => [
 				[input, true],
 				...prev.map(([message, _]) => [message, false] as [string, boolean]),
 			]);
-			// setStatus((prevStatus) => [input, ...prevStatus]);
 		} else if (Array.isArray(input)) {
 			setStatus((prev) => [
 				...input.map((message) => [message, true] as [string, boolean]),
 				...prev.map(([message, _]) => [message, false] as [string, boolean]),
 			]);
-			// setStatus((prevStatus) => [...input, ...prevStatus]);
 		}
 	}
 
