@@ -5,10 +5,9 @@ import { App } from "../../interfaces";
 
 interface SearchProps {
   onAppSelection: (newID: number, newName: string) => void;
-  databaseReady: boolean;
 }
 
-function Search({ onAppSelection, databaseReady }: SearchProps) {
+function Search({ onAppSelection }: SearchProps) {
   const [query, setQuery] = useState("");
   const [applist, setApplist] = useState<App[]>([]);
   const [active, setActive] = useState<boolean>(false);
@@ -77,7 +76,6 @@ function Search({ onAppSelection, databaseReady }: SearchProps) {
         placeholder="Search by name"
         className="search-input"
         onChange={handleChange}
-/*         disabled={!databaseReady} */
       />
       <ul
         className={`search-dropdown ${active ? "search-active" : "search-hidden"}`}

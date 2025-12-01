@@ -21,7 +21,6 @@ fn main() {
             client: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
-            cmd_request_data,
             cmd_search_name,
             cmd_start_client,
             cmd_load_achievements,
@@ -51,17 +50,6 @@ fn main() {
 fn cmd_search_name(handle: AppHandle, query: String) -> Vec<Game> {
     handle.data(|games| {
         dataset::fuzzy_search(games, &query, 10)
-    })
-}
-
-#[tauri::command]
-async fn cmd_request_data(handle: AppHandle) {
-    handle.data(|games| {
-        let first_twenty = games.iter().take(20);
-
-        for game in first_twenty {
-            println!("{} - {}", game.name, game.appid);
-        }
     })
 }
 

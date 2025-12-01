@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 import Search from "./components/Search";
@@ -11,7 +11,6 @@ import { Achievement, Stat, Info } from "./interfaces";
 import "./App.css";
 
 function App() {
-	const isInitialized = useRef(false);
 	const [achievements, setAchievements] = useState<Achievement[]>([]);
 	const [icons, setIcons] = useState<{ [key: string]: string }>({});
 	const [stats, setStats] = useState<Stat[]>([]);
@@ -22,26 +21,12 @@ function App() {
 		user_id: 0,
 		user_name: "",
 	});
-	const [databaseReady, setDatabaseReady] = useState<boolean>(false);
 
 	const [view, setView] = useState<"a" | "s">("a");
 
-	// useEffect(() => {
-	// 	if (isInitialized.current) {
-	// 		return;
-	// 	}
-	// 	isInitialized.current = true;
-	// 	updateStatus("Loading database.");
-	// 	invoke("cmd_request_data").then((response) => {
-	// 		// invoke("cmd_populate_data", { apps: response }).then(() => {
-	// 		// 	updateStatus("Database ready.");
-	// 		// 	setDatabaseReady(true);
-	// 		// });
-	// 		console.log(response);
-	// 		setDatabaseReady(true);
-	// 		updateStatus("Database ready.");
-	// 	});
-	// }, []);
+	useEffect(() => {
+		console.log('App Use Effect');
+	}, []);
 
 	function updateStatus(input: string | string[]) {
 		if (typeof input === "string") {
@@ -125,10 +110,7 @@ function App() {
 	return (
 		<>
 			<div className="sidebar">
-				<Search
-					onAppSelection={handleAppSelection}
-					databaseReady={databaseReady}
-				/>
+				<Search onAppSelection={handleAppSelection} />
 				<Tabs handleSelectView={selectView} />
 				<Status message={status} info={info} />
 			</div>
