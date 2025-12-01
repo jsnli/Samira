@@ -26,22 +26,22 @@ function App() {
 
 	const [view, setView] = useState<"a" | "s">("a");
 
-	useEffect(() => {
-		if (isInitialized.current) {
-			return;
-		}
-		isInitialized.current = true;
-		updateStatus("Loading database.");
-		invoke("cmd_request_data").then((response) => {
-			// invoke("cmd_populate_data", { apps: response }).then(() => {
-			// 	updateStatus("Database ready.");
-			// 	setDatabaseReady(true);
-			// });
-			console.log(response);
-			setDatabaseReady(true);
-			updateStatus("Database ready.");
-		});
-	}, []);
+	// useEffect(() => {
+	// 	if (isInitialized.current) {
+	// 		return;
+	// 	}
+	// 	isInitialized.current = true;
+	// 	updateStatus("Loading database.");
+	// 	invoke("cmd_request_data").then((response) => {
+	// 		// invoke("cmd_populate_data", { apps: response }).then(() => {
+	// 		// 	updateStatus("Database ready.");
+	// 		// 	setDatabaseReady(true);
+	// 		// });
+	// 		console.log(response);
+	// 		setDatabaseReady(true);
+	// 		updateStatus("Database ready.");
+	// 	});
+	// }, []);
 
 	function updateStatus(input: string | string[]) {
 		if (typeof input === "string") {

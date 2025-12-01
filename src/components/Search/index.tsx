@@ -77,7 +77,7 @@ function Search({ onAppSelection, databaseReady }: SearchProps) {
         placeholder="Search by name"
         className="search-input"
         onChange={handleChange}
-        disabled={!databaseReady}
+/*         disabled={!databaseReady} */
       />
       <ul
         className={`search-dropdown ${active ? "search-active" : "search-hidden"}`}
