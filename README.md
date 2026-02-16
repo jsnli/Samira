@@ -1,3 +1,35 @@
+
+<div align="right">
+  <details>
+    <summary >🌐 Language</summary>
+    <div>
+      <div align="center">
+        <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=en">English</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=zh-CN">简体中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=zh-TW">繁體中文</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=ja">日本語</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=ko">한국어</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=hi">हिन्दी</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=th">ไทย</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=fr">Français</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=de">Deutsch</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=es">Español</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=it">Italiano</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=ru">Русский</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=pt">Português</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=nl">Nederlands</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=pl">Polski</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=ar">العربية</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=fa">فارسی</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=tr">Türkçe</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=vi">Tiếng Việt</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=id">Bahasa Indonesia</a>
+        | <a href="https://openaitx.github.io/view.html?user=jsnli&project=Samira&lang=as">অসমীয়া</
+      </div>
+    </div>
+  </details>
+</div>
+
 # Samira
 
 A Steam Achievement Manager for Linux
