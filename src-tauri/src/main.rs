@@ -5,6 +5,7 @@
 mod dataset;
 mod state;
 mod steam;
+mod vdf;
 
 use dataset::Game;
 use state::{AppState, ServiceAccess};
