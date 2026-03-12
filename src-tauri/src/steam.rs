@@ -1,9 +1,7 @@
-use regex::Regex;
+use crate::vdf::{self, VdfMap};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::env;
-use std::fs::File;
-use std::io::Read;
 use std::panic::{self, AssertUnwindSafe};
 use std::sync::{Arc, Mutex};
 
@@ -122,45 +120,50 @@ pub fn load_achievements(client: Client) -> Result<Vec<Achievement>, String> {
 
 pub fn load_achievement_icons(appid: u32) -> HashMap<String, String> {
     let mut paths: HashMap<String, String> = HashMap::new();
-    paths.insert(String::from("Blue String"), String::from("10"));
 
-    let re = Regex::new(
-        r"name(.*?)displaynameenglish(.*?)(icon_gray|icon.*?.jpg)?(icon_gray|icon.*?.jpg)?bit",
-    )
-    .unwrap();
+    let game_root = match load_schema(appid) {
+        Ok(r) => r,
+        Err(e) => { println!("{}", e); return paths; }
+    };
 
-    match load_schema(appid) {
-        Ok(data) => {
-            let captures: Vec<(String, String, String)> = re
-                .captures_iter(&data)
-                .map(|caps| {
-                    let name: String = caps.get(1).map_or("None".to_string(), |m| m.as_str().to_string());
-                    let hash1: String = caps.get(3).map_or("None".to_string(), |m| m.as_str().to_string());
-                    let hash2: String = caps.get(4).map_or("None".to_string(), |m| m.as_str().to_string());
+    let stats_map = match game_root.get("stats").and_then(|v| v.as_map()) {
+        Some(m) => m,
+        None => return paths,
+    };
 
-                    (name, hash1, hash2)
-                })
-                .collect();
-
-            for (name, mut hash1, mut hash2) in captures {
-
-                if hash1.contains("icon_gray") {
-                    hash1 = hash1.replace("icon_gray", "");
-                    hash2 = hash2.replace("icon", "");
-                    paths.insert(name.to_string() + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash1));
-                    paths.insert(name.to_string(), format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash2));
-                } else if hash2.contains("icon_gray") {
-                    hash2 = hash2.replace("icon_gray", "");
-                    hash1 = hash1.replace("icon", "");
-                    paths.insert(name.to_string() + "-gray", format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash2));
-                    paths.insert(name.to_string(), format!("https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}", appid, hash1));
-                }
+    for entry in stats_map.values().filter_map(|v| v.as_map()) {
+        if entry.get("type").and_then(|v| v.as_str()) != Some("ACHIEVEMENTS") {
+            continue;
+        }
+        let bits = match entry.get("bits").and_then(|v| v.as_map()) {
+            Some(b) => b,
+            None => continue,
+        };
+        for bit in bits.values().filter_map(|v| v.as_map()) {
+            let api_name = match bit.get("name").and_then(|v| v.as_str()) {
+                Some(n) => n.to_string(),
+                None => continue,
+            };
+            let display = match bit.get("display").and_then(|v| v.as_map()) {
+                Some(d) => d,
+                None => continue,
+            };
+            if let Some(icon) = display.get("icon").and_then(|v| v.as_str()) {
+                paths.insert(api_name.clone(), format!(
+                    "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}",
+                    appid, icon
+                ));
+            }
+            if let Some(icon_gray) = display.get("icon_gray").and_then(|v| v.as_str()) {
+                paths.insert(api_name + "-gray", format!(
+                    "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/{}/{}",
+                    appid, icon_gray
+                ));
             }
         }
-        Err(e) => {
-            println!("{}", e);
-        }
+        break;
     }
+
     paths
 }
 
@@ -179,91 +182,52 @@ pub fn store_stats(client: Client) {
     let _ = user_stats.store_stats();
 }
 
-pub fn load_schema(appid: u32) -> std::io::Result<String> {
-    let name = env::var("USER").unwrap_or("root".to_string());
+pub fn load_schema(appid: u32) -> std::io::Result<VdfMap> {
+    let home = env::var("HOME")
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::NotFound, e))?;
     let path = format!(
-        "/home/{}/.steam/steam/appcache/stats/UserGameStatsSchema_{}.bin",
-        name, appid
+        "{}/.steam/steam/appcache/stats/UserGameStatsSchema_{}.bin",
+        home, appid
     );
-
-    let mut file = File::open(&path)?;
-    let mut buffer = Vec::new();
-    file.read_to_end(&mut buffer)?;
-    let content = String::from_utf8_lossy(&buffer);
-    let cleaned: String = content
-        .chars()
-        .filter(|&c| c.is_ascii_graphic() || c.is_ascii_whitespace())
-        .collect();
-
-    Ok(cleaned)
+    let bytes = std::fs::read(&path)?;
+    let mut parser = vdf::Parser::new(&bytes);
+    let mut root = parser.parse_object()
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string()))?;
+    let game_root = root.values_mut().next()
+        .and_then(|v| if let vdf::VdfValue::Nested(m) = v { Some(std::mem::take(m)) } else { None })
+        .ok_or_else(|| std::io::Error::new(std::io::ErrorKind::InvalidData, "no game root"))?;
+    Ok(game_root)
 }
 
 pub fn load_statistics(client: Client, appid: u32) -> Vec<Stat> {
     let user_stats = client.user_stats();
 
-    let re = Regex::new(r"type1name(.*?)displayname(.*?)(?:maxchange(\d+))?(?:incrementonly(\d+))?(?:min(\d+)max(\d+)|max(\d+)min(\d+))Default").unwrap();
+    let game_root = match load_schema(appid) {
+        Ok(r) => r,
+        Err(e) => { println!("{}", e); return Vec::new(); }
+    };
 
-    let mut stats: Vec<Stat> = Vec::new();
+    let stats_map = match game_root.get("stats").and_then(|v| v.as_map()) {
+        Some(m) => m,
+        None => return Vec::new(),
+    };
 
-    match load_schema(appid) {
-        Ok(data) => {
-            stats = re
-                .captures_iter(&data)
-                .map(|caps| {
-                    let api_name = caps
-                        .get(1)
-                        .map_or(String::new(), |f| f.as_str().to_string());
-
-                    let name = caps
-                        .get(2)
-                        .map_or(String::new(), |f| f.as_str().to_string());
-                    let value = user_stats.get_stat_i32(&api_name).unwrap_or(0);
-
-                    let min_val_one = caps
-                        .get(5)
-                        .map_or(String::new(), |f| f.as_str().to_string());
-                    let min_val_two = caps
-                        .get(7)
-                        .map_or(String::new(), |f| f.as_str().to_string());
-                    let max_val_one = caps
-                        .get(6)
-                        .map_or(String::new(), |f| f.as_str().to_string());
-                    let max_val_two = caps
-                        .get(8)
-                        .map_or(String::new(), |f| f.as_str().to_string());
-
-                    let mut min = if min_val_one.len() > min_val_two.len() {
-                        &min_val_one
-                    } else {
-                        &min_val_two
-                    };
-                    let mut max = if max_val_one.len() > max_val_two.len() {
-                        &max_val_one
-                    } else {
-                        &max_val_two
-                    };
-
-                    if min > max {
-                        let temp = min;
-                        min = max;
-                        max = temp;
-                    }
-
-                    Stat {
-                        api_name,
-                        name,
-                        min: min.parse::<i32>().unwrap_or(0),
-                        max: max.parse::<i32>().unwrap_or(0),
-                        value,
-                    }
-                })
-                .collect();
-        }
-        Err(e) => {
-            println!("{}", e);
-        }
-    }
-    stats
+    stats_map.values()
+        .filter_map(|v| v.as_map())
+        .filter(|m| m.get("type").and_then(|v| v.as_str()) == Some("INT"))
+        .map(|m| {
+            let api_name = m.get("name").and_then(|v| v.as_str()).unwrap_or("").to_string();
+            let display_name = m.get("display")
+                .and_then(|v| v.as_map())
+                .and_then(|d| d.get("name"))
+                .and_then(|v| v.as_str())
+                .unwrap_or("")
+                .to_string();
+            let max = m.get("max").and_then(|v| v.as_int()).unwrap_or(0);
+            let value = user_stats.get_stat_i32(&api_name).unwrap_or(0);
+            Stat { api_name, name: display_name, min: 0, max, value }
+        })
+        .collect()
 }
 
 pub fn commit_statistics(client: Client, name: String, value: i32) {

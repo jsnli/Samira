@@ -3034,7 +3034,6 @@ name = "samira"
 version = "0.5.0"
 dependencies = [
  "fuzzy-matcher",
- "regex",
  "reqwest",
  "rusqlite",
  "serde",
