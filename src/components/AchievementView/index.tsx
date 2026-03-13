@@ -67,7 +67,8 @@ function AchievementView({
   function apply() {
     const alerts: string[] = [];
     for (let i = 0; i < items.length; i++) {
-      if (items[i].status != achievements[i].status) {
+      const original = achievements.find(a => a.api_name === items[i].api_name);
+      if (original && items[i].status != original.status) {
         invoke("cmd_commit_achievement", {
           name: items[i].api_name,
           unlocked: items[i].status,
