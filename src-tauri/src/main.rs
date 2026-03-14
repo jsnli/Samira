@@ -22,6 +22,7 @@ fn main() {
             client: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
+            cmd_request_app_name,
             cmd_search_name,
             cmd_start_client,
             cmd_load_achievements,
@@ -45,6 +46,16 @@ fn main() {
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn cmd_request_app_name(handle: AppHandle, appid: u32) -> String {
+    handle.data(|games| {
+        games.iter()
+            .find(|g| g.appid == appid)
+            .map(|g| g.name.clone())
+            .unwrap_or_default()
+    })
 }
 
 #[tauri::command]
