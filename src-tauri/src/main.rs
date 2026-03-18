@@ -22,6 +22,7 @@ fn main() {
             client: Mutex::new(None),
         })
         .invoke_handler(tauri::generate_handler![
+            cmd_fetch_games,
             cmd_request_app_name,
             cmd_search_name,
             cmd_start_client,
@@ -33,19 +34,23 @@ fn main() {
             cmd_commit_statistics,
             cmd_retrieve_user,
         ])
-        .setup(|app| {
-            let handle = app.handle().clone();
-
-            let games = dataset::fetch_games()?;
-
-            let app_state: State<AppState> = handle.state();
-            let mut data_guard = app_state.data.lock().unwrap();
-            *data_guard = Some(games);
-
+        .setup(|_app| {
             Ok(())
         })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+#[tauri::command]
+fn cmd_fetch_games(app_handle: AppHandle) -> Result<String, String> {
+    match dataset::fetch_games() {
+        Ok((games, status)) => {
+            let state: State<AppState> = app_handle.state();
+            *state.data.lock().unwrap() = Some(games);
+            Ok(status)
+        }
+        Err(e) => Err(format!("Failed to load database: {}", e)),
+    }
 }
 
 #[tauri::command]

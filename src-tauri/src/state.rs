@@ -22,10 +22,9 @@ impl ServiceAccess for AppHandle {
     {
         let app_state: State<AppState> = self.state();
         let data_guard = app_state.data.lock().unwrap();
-        let data = data_guard
-            .as_ref()
-            .expect("Dataset not loaded yet");
-
-        operation(data)
+        match data_guard.as_ref() {
+            Some(data) => operation(data),
+            None => operation(&vec![]),
+        }
     }
 }

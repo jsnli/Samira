@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
 
 import Search from "./components/Search";
@@ -23,6 +23,13 @@ function App() {
 	});
 
 	const [view, setView] = useState<"a" | "s">("a");
+
+	useEffect(() => {
+		updateStatus("Loading database...");
+		invoke("cmd_fetch_games")
+			.then((status) => updateStatus(status as string))
+			.catch((e) => updateStatus(e as string));
+	}, []);
 
 	function updateStatus(input: string | string[]) {
 		if (typeof input === "string") {
