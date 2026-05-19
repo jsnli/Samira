@@ -48,16 +48,19 @@ pub fn start_client(appid: u32) -> Result<Client, String> {
         let user_stats = client.user_stats();
         let steam_user_id: u64 = client.user().steam_id().raw();
 
-        user_stats.request_user_stats(steam_user_id);
-        client.register_callback(move |_data: UserStatsReceived| {
+        // Bind the CallbackHandle to a named local. Dropping it immediately
+        // unregisters the callback (steamworks 0.12 has a synchronous Drop
+        // impl on CallbackHandle), so the previous pattern silently lost
+        // every UserStatsReceived event except by race-condition luck.
+        let _stats_cb = client.register_callback(move |_data: UserStatsReceived| {
             let mut waiting = waiting_clone.lock().unwrap();
             *waiting = false;
             println!("User Stats Received.");
         });
 
+        user_stats.request_user_stats(steam_user_id);
         client.run_callbacks();
 
-        // to-do: handle this more gracefully
         for _ in 0..10 {
             client.run_callbacks();
             ::std::thread::sleep(::std::time::Duration::from_millis(100));
@@ -88,28 +91,37 @@ pub fn load_achievements(client: Client) -> Result<Vec<Achievement>, String> {
     let result = panic::catch_unwind(AssertUnwindSafe(|| {
         let user_stats = client.user_stats();
 
-        let mut AchievementList: Vec<Achievement> = Vec::new();
-        let names = user_stats
-            .get_achievement_names()
-            .expect("Failed to get names");
-        for name in names {
-            let achievement_helper = user_stats.achievement(&name);
-            let a: Achievement = Achievement {
-                api_name: name.clone(),
-                name: achievement_helper
-                    .get_achievement_display_attribute("name")
-                    .unwrap()
-                    .to_string(),
-                desc: achievement_helper
-                    .get_achievement_display_attribute("desc")
-                    .unwrap()
-                    .to_string(),
-                status: achievement_helper.get().unwrap(),
-            };
-            AchievementList.push(a);
+        // steamworks-rs's get_achievement_names internally calls
+        // get_num_achievements().expect(...), which panics for games with
+        // zero achievements. Bail out cleanly first.
+        if user_stats.get_num_achievements().unwrap_or(0) == 0 {
+            return Vec::new();
         }
 
-        AchievementList
+        let names = user_stats
+            .get_achievement_names()
+            .unwrap_or_default();
+        let mut achievement_list: Vec<Achievement> = Vec::with_capacity(names.len());
+        for name in names {
+            let helper = user_stats.achievement(&name);
+            let display_name = helper
+                .get_achievement_display_attribute("name")
+                .map(|s| s.to_string())
+                .unwrap_or_else(|_| name.clone());
+            let desc = helper
+                .get_achievement_display_attribute("desc")
+                .map(|s| s.to_string())
+                .unwrap_or_default();
+            let status = helper.get().unwrap_or(false);
+            achievement_list.push(Achievement {
+                api_name: name,
+                name: display_name,
+                desc,
+                status,
+            });
+        }
+
+        achievement_list
     }));
 
     match result {
@@ -161,7 +173,9 @@ pub fn load_achievement_icons(appid: u32) -> HashMap<String, String> {
                 ));
             }
         }
-        break;
+        // Steam splits >32 achievements across multiple ACHIEVEMENTS blocks
+        // (each block is a 32-bit bitfield). Do NOT break - iterate them all,
+        // otherwise games with 33+ achievements lose icons past index 31.
     }
 
     paths
